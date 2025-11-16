@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Sobre nosotros - LOOM</title>
+
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<style>
+/* General */
+body {
+	background-color: #e9eaff;
+	font-family: Arial, sans-serif;
+	margin: 0;
+}
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky;
+	top: 20px;
+	background-color: #cecfff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	height: 70px;
+}
+
+.banner-header img {
+	height: 50px;
+	transform: scale(2.5) translateX(-5px);
+	transform-origin: left center;
+}
+
+.banner-header div:last-child {
+	transform: translateX(85px);
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: white;
+	color: black;
+	border: none;
+	padding: 15px 45px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em;
+	transition: all 0.3s ease;
+}
+
+.banner-header .eps-btn:hover {
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+
+/* --- SECCIÓN QUIÉNES SOMOS --- */
+.quienes-somos {
+  position: relative;
+  width: 90%;
+  margin: 20px auto 40px auto; /* 🔹 antes tenía 100px arriba, ahora más pegado al banner */
+  border-radius: 15px;
+  overflow: hidden;
+  height: 220px; /* 🔹 más corta */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Imagen de fondo */
+.quienes-somos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* Recuadro traslúcido */
+.quienes-texto {
+  position: relative;
+  z-index: 1;
+  background: rgba(147, 150, 148, 0.45);
+  backdrop-filter: blur(10px);
+  padding: 15px 35px; /* 🔹 más pequeño */
+  border-radius: 15px;
+  max-width: 40%; /* 🔹 centrado y más estrecho */
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.quienes-texto h2 {
+  font-size: 1.8em;
+  margin: 0;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* --- RECUADROS GENERALES (Historia, Misión, Visión) --- */
+.section-container {
+	width: 85%;
+	margin: 40px auto;
+	background-color: white;
+	border: 3px solid #b8b9e6;
+	border-radius: 15px;
+	padding: 0;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: stretch;
+	overflow: hidden;
+	font-size: 1.05em;
+	line-height: 1.6;
+	text-align: justify;
+}
+
+/* Imagen Historia ocupa todo el alto */
+.section-container img {
+	width: 25%;
+	object-fit: cover;
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+}
+
+/* Texto Historia */
+.section-text {
+	padding: 30px 40px;
+	width: 75%;
+}
+
+/* --- Misión y Visión --- */
+.mision-container, .vision-container {
+	width: 85%;
+	margin: 25px auto;
+	background-color: white;
+	border: 3px solid #b8b9e6;
+	border-radius: 15px;
+	padding: 30px 40px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	text-align: justify;
+	font-size: 1.05em;
+	line-height: 1.6;
+}
+
+/* Títulos */
+.mision-container h3, .vision-container h3 {
+	margin-top: 0;
+	margin-bottom: 15px;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.mision-container h3 {
+	text-align: left;
+}
+
+.vision-container h3 {
+	text-align: right;
+}
+
+/* Responsivo */
+@media ( max-width : 768px) {
+	.section-container {
+		flex-direction: column;
+	}
+	.section-container img {
+		width: 100%;
+		height: 200px;
+		border-radius: 15px 15px 0 0;
+	}
+	.section-text {
+		width: 100%;
+	}
+	.quienes-texto {
+		padding: 20px;
+		max-width: 90%;
+	}
+}
+
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	.links-container {
+		flex-direction: column;
+		gap: 20px;
+	}
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+</style>
+</h:head>
+
+<body>
+
+	<!-- Banner -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"><img src="images/logoblanco.png"
+				alt="Logo" /></a>
+			<div>
+				<a href="sobrenosotros.xhtml">Sobre nosotros</a> <a href="eps.xhtml"
+					class="eps-btn">EPS</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- QUIÉNES SOMOS -->
+	<div class="quienes-somos">
+		<img src="images/quienes.png" alt="Fondo quienes somos" />
+		<div class="quienes-texto">
+			<h2>¡Quiénes Somos!</h2>
+		</div>
+	</div>
+
+
+	<!-- HISTORIA -->
+	<div class="section-container">
+		<img src="images/histo.png" alt="Imagen historia" />
+		<div class="section-text">
+			<h3>HISTORIA</h3>
+			<p>LOOM nació del compromiso y la visión de dos jóvenes
+				fundadoras convencidas de que la tecnología puede ser una
+				herramienta poderosa para transformar la atención en salud en
+				Colombia. Durante nuestras experiencias personales y familiares
+				dentro del sistema de salud, vimos de cerca las dificultades que
+				surgen cuando la información médica se fragmenta entre diferentes
+				EPS.</p>
+			<p>Esa realidad nos inspiró a crear una solución que garantizara
+				continuidad, seguridad y confianza en los datos clínicos. Así surgió
+				LOOM: un sistema que teje los hilos de la información médica para
+				que pacientes, médicos y entidades trabajen en conjunto de manera
+				más humana, transparente y eficiente. Nuestra meta es simple pero
+				profunda: conectar historias, no solo registros.</p>
+		</div>
+	</div>
+
+	<!-- MISIÓN -->
+	<div class="mision-container">
+		<h3>MISIÓN</h3>
+		<p>Brindar una solución tecnológica innovadora que unifique y
+			proteja la información médica de los pacientes, garantizando su
+			confidencialidad, trazabilidad y acceso controlado. En LOOM,
+			trabajamos para fortalecer la conexión entre pacientes, profesionales
+			de la salud y EPS, optimizando la atención médica y promoviendo un
+			sistema de salud más humano, eficiente y centrado en las personas.</p>
+	</div>
+
+	<!-- VISIÓN -->
+	<div class="vision-container">
+		<h3>VISIÓN</h3>
+		<p>Ser la plataforma líder en interoperabilidad médica en Colombia
+			y Latinoamérica, reconocida por transformar la gestión de la
+			información en salud. En LOOM, soñamos con un sistema en el que cada
+			paciente tenga control total sobre su historia clínica y cada
+			profesional pueda acceder a información confiable y oportuna para
+			brindar una atención continua, segura y de calidad.</p>
+	</div>
+	
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

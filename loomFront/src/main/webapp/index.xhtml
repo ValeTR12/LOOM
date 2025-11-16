@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Lista de Usuarios</title>
+</h:head>
+
+<h:body>
+
+	<h:form>
+		<p:dataTable value="#{usuarioBean.usuarios}" var="u"
+			stripedRows="true">
+
+			<p:column headerText="ID">
+                #{u.idUsuario}
+            </p:column>
+
+			<p:column headerText="Documento">
+                #{u.documento}
+            </p:column>
+
+			<p:column headerText="Primer Nombre">
+                #{u.primerNombre}
+            </p:column>
+
+			<p:column headerText="Segundo Nombre">
+                #{u.segundoNombre}
+            </p:column>
+
+			<p:column headerText="Primer Apellido">
+                #{u.primerApellido}
+            </p:column>
+
+			<p:column headerText="Segundo Apellido">
+                #{u.segundoApellido}
+            </p:column>
+
+			<p:column headerText="Dirección">
+                #{u.direccion}
+            </p:column>
+
+			<p:column headerText="Ciudad">
+                #{u.ciudad}
+            </p:column>
+
+			<p:column headerText="Contraseña">
+                #{u.contrasena}
+            </p:column>
+
+			<!-- ROL -->
+			<p:column headerText="Rol">
+                #{u.rol.nombreRol}
+            </p:column>
+
+			<p:column headerText="Descripción Rol">
+                #{u.rol.descripcion}
+            </p:column>
+
+			<!-- CONTACTOS -->
+			<p:column headerText="Contactos">
+				<ui:repeat value="#{u.contactos}" var="c">
+					<div>
+						<b>#{c.tipo}:</b> #{c.valor}
+					</div>
+				</ui:repeat>
+			</p:column>
+
+		</p:dataTable>
+	</h:form>
+
+</h:body>
+</html>

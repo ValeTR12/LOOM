@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/png" href="images/icon.png" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<title>Medico</title>
+	<style>
+body {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fondo con transparencia */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("images/fmedico.png"); /* tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.4; /* transparencia */
+    z-index: -1; /* queda detrás del contenido */
+}
+
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky; /* Banner flotante */
+	top: 20px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+}
+
+.banner-header img {
+	height: 50px;
+}
+
+.banner-header div:last-child {
+	transform: translateX(100px); /* desplaza el bloque a la izquierda */
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: #cecfff;
+	color: black;
+	border: none;
+	padding: 15px 45px; /* más grande que antes */
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em; /* texto un poco más grande */
+}
+
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+
+.paciente-section {
+	width: 90%;
+	margin: 50px auto;
+	display: flex;
+	justify-content: center;
+}
+
+.paciente-panel {
+	background-color: white;
+	border: 3px solid #cecfff;
+	border-radius: 20px;
+	width: 100%;
+	max-width: 1100px;
+	padding: 30px;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Botones */
+.botones-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	width: 100%;
+	gap: 10px;
+	margin-bottom: 25px;
+}
+
+.tab-btn {
+	flex: 1;
+	background-color: transparent;
+	border: 2px solid #cecfff;
+	color: #333;
+	padding: 15px;
+	border-radius: 12px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-align: center;
+}
+
+/* Efectos hover */
+.tab-btn:hover {
+	background-color: #cecfff;
+	color: black;
+	transform: translateY(-3px);
+}
+/* Quitar estilo por defecto de PrimeFaces */
+.tab-btn.ui-button {
+    background: transparent !important;
+    border: 2px solid #cecfff !important;
+    color: #333 !important;
+    box-shadow: none !important;
+}
+
+/* Hover personalizado */
+.tab-btn.ui-button:hover {
+    background-color: #cecfff !important;
+    color: black !important;
+    transform: translateY(-3px);
+}
+
+/* Elimina el color azul de foco */
+.tab-btn.ui-state-focus,
+.tab-btn.ui-state-hover {
+    background-color: #cecfff !important;
+    color: black !important;
+}
+/* Contenedor de contenido (opcional, si no hay modales) */
+.tab-content {
+	width: 100%;
+	max-height: 600px; /* altura del contenedor */
+	background-color: #ededfd;
+	border-radius: 15px;
+	border: 2px dashed #cecfff;
+	padding: 30px;
+	color: #333;
+	font-size: 1.1em;
+	overflow-y: auto; /* scroll vertical */
+	overflow-x: hidden; /* evita scroll horizontal */
+	box-sizing: border-box;
+}
+
+/* Adaptabilidad móvil */
+@media ( max-width : 768px) {
+	.botones-container {
+		flex-direction: column;
+	}
+	.tab-btn {
+		width: 100%;
+	}
+}
+
+.eps-btn i {
+	margin-right: 8px;
+	font-size: 1.2em;
+	color: #555;
+	transition: color 0.3s ease;
+}
+
+.eps-btn:hover i {
+	color: #000;
+}
+
+.consulta-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr); /* 4 por fila */
+	gap: 20px;
+	width: 100%;
+}
+
+/* Responsivo */
+@media ( max-width : 1024px) {
+	.consulta-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media ( max-width : 600px) {
+	.consulta-grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+.custom-dialog {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important; /* centra vertical y horizontal */
+    max-height: calc(100vh - 60px) !important; /* margen simétrico arriba/abajo */
+}
+
+/* Quitar scroll del dialog completo */
+.custom-dialog .ui-dialog-content {
+    overflow: hidden !important;      /* ❗ obligatorio */
+    padding: 0 !important;            /* evita padding adicional que empuja */
+}
+
+/* Dejar scroll SOLO dentro del contenido */
+.dialog-scroll {
+    max-height: calc(100vh - 180px) !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+/* Forzar color negro en los enlaces PrimeFaces */
+.p-link,
+.p-link * {
+    color: black !important;
+}
+.ui-commandlink,
+.ui-commandlink * {
+    color: black !important;
+}
+</style>
+</h:head>
+<body>
+
+	<!-- Banner flotante -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"> <img src="images/logoFondoBlanco.png"
+				alt="Logo" />
+			</a>
+			<div>
+				<a href="inicio.xhtml" class="eps-btn"> <i
+					class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===========================
+         SECCIÓN MÉDICO COMPLETA
+         =========================== -->
+	<section class="paciente-section">
+		<h:form id="modales">
+
+			<div class="paciente-panel">
+
+				<!-- ===========================
+                     BOTONES DE NAVEGACIÓN
+                     =========================== -->
+				<div class="botones-container">
+
+					<p:commandButton value="Mi información"
+						actionListener="#{medicoBean.cambiarVista('info')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-info" />
+
+
+					<p:commandButton value="Mis consultas"
+						actionListener="#{medicoBean.consultasPorPacientePorMedico}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-consultas" />
+
+					<p:commandButton value="Mis pacientes"
+						actionListener="#{medicoBean.mostrarPacientes}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-pacientes" />
+
+
+				</div>
+	
+				<!-- ===========================
+                     CONTENEDOR GENERAL
+                     =========================== -->
+				<p:outputPanel id="tabcontent" class="tab-content" autoUpdate="true">
+
+					<!-- ===========================
+     SECCIÓN: MI INFORMACIÓN
+     =========================== -->
+					<p:outputPanel id="infoContainer"
+						rendered="#{medicoBean.vista == 'info'}" style="padding:20px;">
+
+						<p:panel header="Mi Información"
+							style="width: 520px; height: 420px;
+                    overflow-y: auto; padding: 15px;">
+
+							<!-- Documento -->
+							<h:panelGroup>
+								<h:outputText value="Documento: " style="font-weight:bold;" />
+								<h:outputText value="#{medicoBean.medicoActual.documento}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Nombre -->
+							<h:panelGroup>
+								<h:outputText value="Nombre Completo: "
+									style="font-weight:bold;" />
+								<h:outputText
+									value="#{medicoBean.medicoActual.primerNombre}
+                                 #{medicoBean.medicoActual.segundoNombre}
+                                 #{medicoBean.medicoActual.primerApellido}
+                                 #{medicoBean.medicoActual.segundoApellido}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Dirección -->
+							<h:panelGroup>
+								<h:outputText value="Dirección: " style="font-weight:bold;" />
+								<h:outputText value="#{medicoBean.medicoActual.direccion}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Ciudad -->
+							<h:panelGroup>
+								<h:outputText value="Ciudad: " style="font-weight:bold;" />
+								<h:outputText value="#{medicoBean.medicoActual.ciudad}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- EPS -->
+							<h:panelGroup>
+								<h:outputText value="EPS: " style="font-weight:bold;" />
+								<h:outputText value="#{medicoBean.epsActual.nombreEps}" />
+								<br />
+								<br />
+								<p:graphicImage
+									value="/images/#{consultaBean.obtenerLogoEps(medicoBean.epsActual.nombreEps)}"
+									style="width:120px; border-radius:8px;" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Contactos -->
+							<h:panelGroup
+								rendered="#{not empty medicoBean.medicoActual.contactos}">
+								<h:outputText value="Contactos:" style="font-weight:bold;" />
+								<ul>
+									<ui:repeat value="#{medicoBean.medicoActual.contactos}" var="c">
+										<li><h:outputText value="#{c.tipo}: #{c.valor}" /></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<br />
+
+							<!-- Tarjeta profesional -->
+							<h:panelGroup>
+								<h:outputText value="Tarjeta Profesional: "
+									style="font-weight:bold;" />
+								<h:outputText
+									value="#{medicoBean.medicoActual.tarjetaProfesional}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Especialidad -->
+							<h:panelGroup>
+								<h:outputText value="Especialidad: " style="font-weight:bold;" />
+								<h:outputText value="#{medicoBean.medicoActual.especialidad}" />
+							</h:panelGroup>
+
+						</p:panel>
+					</p:outputPanel>
+
+
+					<!-- ===========================
+                         SECCIÓN DE PACIENTES
+                         =========================== -->
+					<p:outputPanel id="pacientesContainer"
+						rendered="#{medicoBean.vista == 'pacientes'}">
+
+						<!-- Mostrar solo si hay pacientes -->
+						<h:panelGroup
+							rendered="#{not empty medicoBean.pacientesPorMedico}">
+
+							<!-- CONTENEDOR GRID (4 POR FILA) -->
+							<div class="consulta-grid">
+
+								<!-- REPETICIÓN DE PACIENTES -->
+								<ui:repeat value="#{medicoBean.pacientesPorMedico}" var="c">
+
+									<p:card styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%;
+                               box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<!-- LINK QUE ABRE EL MODAL -->
+										<p:commandLink process="@this"
+											actionListener="#{medicoBean.seleccionarPacienteMedico(c)}"
+											oncomplete="PF('dialogPaciente').show()"
+											update=":modales:dialogContenidoPaciente">
+
+											<p style="margin-top: 10px; font-weight: bold;">
+												Nombre:
+												<h:outputText value="#{c.primerNombre}" />
+												<h:outputText value=" #{c.primerApellido}" />
+											</p>
+
+											<p>
+												Documento:
+												<h:outputText value="#{c.documento}" />
+											</p>
+
+											<p>
+												Ciudad de origen:
+												<h:outputText value="#{c.ciudad}" />
+											</p>
+
+										</p:commandLink>
+
+									</p:card>
+
+								</ui:repeat>
+
+							</div>
+
+							<!-- ===========================
+                                 MODAL DE DETALLES
+                                 =========================== -->
+							<p:dialog header="Detalles del Paciente"
+								widgetVar="dialogPaciente" styleClass="custom-dialog"
+								modal="true" responsive="true" width="550" height="500"
+								style="overflow: hidden !important;">
+								<!-- CONTENEDOR SCROLLEABLE -->
+								<div class="dialog-scroll">
+
+									<h:panelGrid columns="1" id="dialogContenidoPaciente"
+										style="width:100%;">
+
+										<!-- =====================
+                                             DIAGNÓSTICOS
+                                             ===================== -->
+										<!-- =====================
+     DATOS PERSONALES
+     ===================== -->
+										<h3 style="margin-top: 25px;">👤 Datos Personales</h3>
+
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+           border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<h:outputText value="Documento:" style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.documento}" />
+
+											<h:outputText value="Primer Nombre:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.primerNombre}" />
+
+											<h:outputText value="Segundo Nombre:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.segundoNombre}" />
+
+											<h:outputText value="Primer Apellido:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.primerApellido}" />
+
+											<h:outputText value="Segundo Apellido:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.segundoApellido}" />
+
+											<h:outputText value="Ciudad:" style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.ciudad}" />
+
+										</h:panelGrid>
+
+
+
+										<!-- =====================
+     DATOS EPS
+     ===================== -->
+										<h3 style="margin-top: 25px;">🏥 Datos EPS Afiliado</h3>
+
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+           border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<h:outputText value="Nombre EPS:" style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.epsPacienteSeleccionado.nombreEps}" />
+
+											<h:outputText value="Logo EPS:" style="font-weight:bold;" />
+											<p:graphicImage
+												value="/images/#{consultaBean.obtenerLogoEps(medicoBean.epsPacienteSeleccionado.nombreEps)}"
+												style="width:60px; height:auto;" />
+
+											<h:outputText value="Fecha de Afiliación:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.fechaAfiliacion}" />
+
+											<h:outputText value="Tipo de Afiliación:"
+												style="font-weight:bold;" />
+											<h:outputText
+												value="#{medicoBean.pacienteSeleccionadoMedico.tipoAfiliacion}" />
+
+										</h:panelGrid>
+
+
+
+										<!-- =====================
+     DATOS DE CONTACTO
+     ===================== -->
+										<h3 style="margin-top: 25px;">📱 Datos de Contacto</h3>
+
+										<ui:repeat
+											value="#{medicoBean.pacienteSeleccionadoMedico.contactos}"
+											var="c">
+											<h:panelGrid columns="2"
+												style="width:100%; border:1px solid #ddd; padding:10px;
+               border-radius:8px; margin-bottom:10px;"
+												columnClasses="col1,col2">
+
+												<h:outputText value="Tipo:" style="font-weight:bold;" />
+												<h:outputText value="#{c.tipo}" />
+
+												<h:outputText value="Valor:" style="font-weight:bold;" />
+												<h:outputText value="#{c.valor}" />
+
+											</h:panelGrid>
+										</ui:repeat>
+
+
+									</h:panelGrid>
+
+								</div>
+
+							</p:dialog>
+
+						</h:panelGroup>
+
+						<!-- ===========================
+                             SI NO HAY CONSULTAS
+                             =========================== -->
+						<h:outputText value="No hay pacientes vigentes."
+							rendered="#{empty medicoBean.pacientesPorMedico}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+					<!-- ===========================
+                         SECCIÓN DE CONSULTAS
+                         =========================== -->
+					<p:outputPanel id="consultasContainer"
+						rendered="#{medicoBean.vista == 'consultas'}">
+
+						<!-- ===========================
+         GRID SOLO SI HAY CONSULTAS
+         =========================== -->
+						<h:panelGroup
+							rendered="#{not empty medicoBean.consultasPorMedico}">
+
+							<!-- *** ESTE DIV ES EL NUEVO GRID *** -->
+							<div class="consulta-grid">
+
+								<!-- LISTA DE CONSULTAS -->
+								<ui:repeat value="#{medicoBean.consultasPorMedico}" var="c">
+
+									<p:card styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%;
+                           box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<!-- ENLACE QUE ABRE EL MODAL -->
+										<p:commandLink process="@this"
+											actionListener="#{medicoBean.seleccionarConsultaMedico(c)}"
+											oncomplete="PF('dialogConsulta').show()"
+											update=":modales:dialogContenido">
+
+											<p style="margin-top: 10px; font-weight: bold;">
+												Fecha:
+												<h:outputText value="#{c.fechaConsulta}" />
+											</p>
+
+											<p>
+												Paciente:
+												<h:outputText value="#{usuarioBean.traerNombre(c.idPaciente)}" />
+											</p>
+
+											<p>
+												Validez:
+												<h:outputText value="#{c.fechaValidez}" />
+											</p>
+
+										</p:commandLink>
+
+									</p:card>
+
+								</ui:repeat>
+
+							</div>
+							<!-- CIERRE DEL GRID -->
+
+							<!-- ===========================
+             MODAL DE DETALLES
+             =========================== -->
+							<p:dialog header="Detalles de la Consulta"
+								widgetVar="dialogConsulta" styleClass="custom-dialog" modal="true" responsive="true"
+								width="550" height="500" style="overflow:hidden;">
+
+								<div class="dialog-scroll">
+								
+									<h:panelGrid columns="1" id="dialogContenido"
+										style="width:100%;">
+
+										<!-- DIAGNÓSTICOS -->
+										<h3 style="margin-top: 15px;">🩺 Diagnósticos</h3>
+
+										<ui:repeat
+											value="#{medicoBean.consultaSeleccionadaMedico.diagnosticos}"
+											var="d">
+											<h:panelGrid columns="2"
+												style="width:100%; border:1px solid #ddd; padding:10px;
+                                   border-radius:8px; margin-bottom:10px;"
+												columnClasses="col1,col2">
+
+												<h:outputText value="Código CIE10:"
+													style="font-weight:bold;" />
+												<h:outputText value="#{d.codigoCie10}" />
+
+												<h:outputText value="Descripción:" style="font-weight:bold;" />
+												<h:outputText value="#{d.descripcion}" />
+
+											</h:panelGrid>
+										</ui:repeat>
+
+										<!-- MEDICAMENTOS -->
+										<h3 style="margin-top: 25px;">💊 Medicamentos</h3>
+
+										<ui:repeat
+											value="#{medicoBean.consultaSeleccionadaMedico.medicamentos}"
+											var="m">
+											<h:panelGrid columns="2"
+												style="width:100%; border:1px solid #ddd; padding:10px;
+                                   border-radius:8px; margin-bottom:10px;"
+												columnClasses="col1,col2">
+
+												<h:outputText value="Nombre comercial:"
+													style="font-weight:bold;" />
+												<h:outputText value="#{m.nombreComercial}" />
+
+												<h:outputText value="Principio activo:"
+													style="font-weight:bold;" />
+												<h:outputText value="#{m.principioActivo}" />
+
+												<h:outputText value="Dosis:" style="font-weight:bold;" />
+												<h:outputText value="#{m.dosis}" />
+
+												<h:outputText value="Frecuencia:" style="font-weight:bold;" />
+												<h:outputText value="#{m.frecuencia}" />
+
+												<h:outputText value="Duración (días):"
+													style="font-weight:bold;" />
+												<h:outputText value="#{m.duracion}" />
+
+											</h:panelGrid>
+										</ui:repeat>
+
+										<!-- EXÁMENES -->
+										<h3 style="margin-top: 25px;">🧪 Exámenes</h3>
+
+										<ui:repeat
+											value="#{medicoBean.consultaSeleccionadaMedico.examenes}"
+											var="e">
+											<h:panelGrid columns="2"
+												style="width:100%; border:1px solid #ddd; padding:10px;
+                                   border-radius:8px; margin-bottom:10px;"
+												columnClasses="col1,col2">
+
+												<h:outputText value="Tipo de examen:"
+													style="font-weight:bold;" />
+												<h:outputText value="#{e.tipoExamen}" />
+
+												<h:outputText value="Resultado:" style="font-weight:bold;" />
+												<h:outputText value="#{e.resultado}" />
+
+												<h:outputText value="Fecha:" style="font-weight:bold;" />
+												<h:outputText value="#{e.fechaExamen}" />
+
+											</h:panelGrid>
+										</ui:repeat>
+
+									</h:panelGrid>
+
+								</div>
+
+							</p:dialog>
+
+						</h:panelGroup>
+
+						<!-- ===========================
+         SI NO HAY CONSULTAS
+         =========================== -->
+						<h:outputText value="No hay consultas vigentes."
+							rendered="#{empty medicoBean.consultasPorMedico}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+
+				</p:outputPanel>
+
+			</div>
+
+		</h:form>
+	</section>
+
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">
+				Líneas de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+		<!-- Línea vertical -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+
+	</footer>
+
+</body>
+
+</html>

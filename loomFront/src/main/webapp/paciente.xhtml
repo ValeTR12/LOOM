@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/png" href="images/icon.png" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<title>Paciente</title>
+	<style>
+body {
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+/* Fondo con transparencia */
+body::before {
+	content: "";
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("images/fpaciente.png"); /* tu imagen */
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	opacity: 0.4; /* transparencia */
+	z-index: -1; /* queda detrás del contenido */
+}
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky; /* Banner flotante */
+	top: 20px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+}
+
+.banner-header img {
+	height: 50px;
+}
+
+.banner-header div:last-child {
+	transform: translateX(100px); /* desplaza el bloque a la izquierda */
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: #cecfff;
+	color: black;
+	border: none;
+	padding: 15px 45px; /* más grande que antes */
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em; /* texto un poco más grande */
+}
+
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+
+.paciente-section {
+	width: 90%;
+	margin: 50px auto;
+	display: flex;
+	justify-content: center;
+}
+
+.paciente-panel {
+	background-color: white;
+	border: 3px solid #cecfff;
+	border-radius: 20px;
+	width: 100%;
+	max-width: 1100px;
+	padding: 30px;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Botones */
+.botones-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	width: 100%;
+	gap: 10px;
+	margin-bottom: 25px;
+}
+
+.tab-btn {
+	flex: 1;
+	background-color: transparent;
+	border: 2px solid #cecfff;
+	color: #333;
+	padding: 15px;
+	border-radius: 12px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-align: center;
+}
+
+/* Efectos hover */
+.tab-btn:hover {
+	background-color: #cecfff;
+	color: black;
+	transform: translateY(-3px);
+}
+/* Quitar estilo por defecto de PrimeFaces */
+.tab-btn.ui-button {
+	background: transparent !important;
+	border: 2px solid #cecfff !important;
+	color: #333 !important;
+	box-shadow: none !important;
+}
+
+/* Hover personalizado */
+.tab-btn.ui-button:hover {
+	background-color: #cecfff !important;
+	color: black !important;
+	transform: translateY(-3px);
+}
+
+/* Elimina el color azul de foco */
+.tab-btn.ui-state-focus, .tab-btn.ui-state-hover {
+	background-color: #cecfff !important;
+	color: black !important;
+}
+/* Contenedor de contenido (opcional, si no hay modales) */
+.tab-content {
+	width: 100%;
+	max-height: 600px; /* altura del contenedor */
+	background-color: #ededfd;
+	border-radius: 15px;
+	border: 2px dashed #cecfff;
+	padding: 30px;
+	color: #333;
+	font-size: 1.1em;
+	overflow-y: auto; /* scroll vertical */
+	overflow-x: hidden; /* evita scroll horizontal */
+	box-sizing: border-box;
+}
+
+/* Adaptabilidad móvil */
+@media ( max-width : 768px) {
+	.botones-container {
+		flex-direction: column;
+	}
+	.tab-btn {
+		width: 100%;
+	}
+}
+
+.eps-btn i {
+	margin-right: 8px;
+	font-size: 1.2em;
+	color: #555;
+	transition: color 0.3s ease;
+}
+
+.eps-btn:hover i {
+	color: #000;
+}
+
+.consulta-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr); /* 4 por fila */
+	gap: 20px;
+	width: 100%;
+}
+
+/* Responsivo */
+@media ( max-width : 1024px) {
+	.consulta-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media ( max-width : 600px) {
+	.consulta-grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+.custom-dialog {
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	transform: translate(-50%, -50%) !important;
+	/* centra vertical y horizontal */
+	max-height: calc(100vh - 60px) !important;
+	/* margen simétrico arriba/abajo */
+}
+
+/* Quitar scroll del dialog completo */
+.custom-dialog .ui-dialog-content {
+	overflow: hidden !important; /* ❗ obligatorio */
+	padding: 0 !important; /* evita padding adicional que empuja */
+}
+
+/* Dejar scroll SOLO dentro del contenido */
+.dialog-scroll {
+	max-height: calc(100vh - 180px) !important;
+	overflow-y: auto !important;
+	padding: 20px !important;
+	box-sizing: border-box !important;
+}
+/* Forzar color negro en los enlaces PrimeFaces */
+.p-link, .p-link * {
+	color: black !important;
+}
+
+.ui-commandlink, .ui-commandlink * {
+	color: black !important;
+}
+</style>
+</h:head>
+
+<body>
+	<!-- Banner flotante -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"> <img src="images/logoFondoBlanco.png"
+				alt="Logo" />
+			</a>
+			<div>
+				<a href="inicio.xhtml" class="eps-btn"> <i
+					class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+				</a>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!-- SECCIÓN PACIENTE -->
+	<!-- SECCIÓN PACIENTE -->
+	<section class="paciente-section">
+		<h:form id="modales">
+
+			<div class="paciente-panel">
+
+				<!-- ===========================
+                 BOTONES DE NAVEGACIÓN
+                 =========================== -->
+				<div class="botones-container">
+
+					<p:commandButton value="Mi información"
+						actionListener="#{pacienteBean.cambiarVista('info')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-info" />
+
+					<p:commandButton value="Mis consultas"
+						actionListener="#{pacienteBean.cambiarVista('consultas')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-consultas" />
+
+					<p:commandButton value="Mis diagnósticos"
+						actionListener="#{pacienteBean.cambiarVista('diagnosticos')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-diagnosticos" />
+
+					<p:commandButton value="Mis medicamentos"
+						actionListener="#{pacienteBean.cambiarVista('medicamentos')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-medicamentos" />
+
+					<p:commandButton value="Mis exámenes"
+						actionListener="#{pacienteBean.cambiarVista('examenes')}"
+						update=":modales:tabcontent" process="@this" styleClass="tab-btn"
+						id="btn-examenes" />
+
+				</div>
+
+				<!-- ===========================
+                 CONTENEDOR GENERAL
+                 =========================== -->
+				<p:outputPanel id="tabcontent" class="tab-content" autoUpdate="true">
+
+					<!-- ===========================
+                     SECCIÓN: MI INFORMACIÓN
+                     =========================== -->
+					<p:outputPanel id="infoContainer"
+						rendered="#{pacienteBean.vista == 'info'}" style="padding:20px;">
+
+						<p:panel header="Mi Información"
+							style="width: 520px; height: 420px; overflow-y: auto; padding: 15px;">
+
+							<!-- Documento -->
+							<h:panelGroup>
+								<h:outputText value="Documento: " style="font-weight:bold;" />
+								<h:outputText value="#{pacienteBean.pacienteActual.documento}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Nombre -->
+							<h:panelGroup>
+								<h:outputText value="Nombre Completo: "
+									style="font-weight:bold;" />
+								<h:outputText
+									value="#{pacienteBean.pacienteActual.primerNombre} 
+                                #{pacienteBean.pacienteActual.segundoNombre} 
+                                #{pacienteBean.pacienteActual.primerApellido} 
+                                #{pacienteBean.pacienteActual.segundoApellido}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Dirección -->
+							<h:panelGroup>
+								<h:outputText value="Dirección: " style="font-weight:bold;" />
+								<h:outputText value="#{pacienteBean.pacienteActual.direccion}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Ciudad -->
+							<h:panelGroup>
+								<h:outputText value="Ciudad: " style="font-weight:bold;" />
+								<h:outputText value="#{pacienteBean.pacienteActual.ciudad}" />
+							</h:panelGroup>
+							<br />
+
+							<!-- EPS -->
+							<h:panelGroup>
+								<h:outputText value="EPS: " style="font-weight:bold;" />
+								<h:outputText value="#{pacienteBean.epsActual.nombreEps}" />
+								<br />
+								<br />
+								<p:graphicImage
+									value="/images/#{consultaBean.obtenerLogoEps(pacienteBean.epsActual.nombreEps)}"
+									style="width:120px; border-radius:8px;" />
+							</h:panelGroup>
+							<br />
+
+							<!-- Contactos -->
+							<h:panelGroup
+								rendered="#{not empty pacienteBean.pacienteActual.contactos}">
+								<h:outputText value="Contactos:" style="font-weight:bold;" />
+								<ul>
+									<ui:repeat value="#{pacienteBean.pacienteActual.contactos}"
+										var="c">
+										<li><h:outputText value="#{c.tipo}: #{c.valor}" /></li>
+									</ui:repeat>
+								</ul>
+							</h:panelGroup>
+							<br />
+
+						</p:panel>
+					</p:outputPanel>
+
+					<!-- =================================
+                     SECCIÓN CONSULTAS
+                     ================================= -->
+					<p:outputPanel id="consultasContainer"
+						rendered="#{pacienteBean.vista == 'consultas'}">
+
+						<h:panelGroup rendered="#{not empty consultaBean.consultas}">
+
+							<!-- CONTENEDOR GRID -->
+							<div class="consulta-grid">
+								<ui:repeat value="#{consultaBean.consultas}" var="c">
+									<p:card header="#{c.eps.nombreEps}" styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%; 
+                                    box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<p:commandLink process="@this"
+											actionListener="#{consultaBean.seleccionarConsulta(c)}"
+											oncomplete="PF('dialogConsulta').show()"
+											update=":modales:dialogContenidoConsultas">
+
+											<h:graphicImage
+												value="/images/#{consultaBean.obtenerLogoEps(c.eps.nombreEps)}"
+												style="width:100px;height:auto;margin:auto;display:block;" />
+
+											<p style="margin-top: 10px; font-weight: bold;">
+												Fecha:
+												<h:outputText value="#{c.fechaConsulta}" />
+											</p>
+
+											<p>
+												Especialidad:
+												<h:outputText
+													value="#{medicoBean.obtenerEspecialidad(c.idMedico)}" />
+											</p>
+
+										</p:commandLink>
+
+									</p:card>
+								</ui:repeat>
+							</div>
+
+							<!-- MODAL -->
+							<p:dialog header="Detalles de la Consulta"
+								widgetVar="dialogConsulta" styleClass="custom-dialog"
+								modal="true" responsive="true" width="550" height="500"
+								style="overflow:hidden !important;">
+
+								<div class="dialog-scroll">
+									<h:panelGrid columns="1" id="dialogContenidoConsultas"
+										style="width:100%;">
+
+										<!-- Diagnósticos -->
+										<h3 style="margin-top: 25px;">👤 Diagnósticos</h3>
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+                                        border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<ui:repeat
+												value="#{consultaBean.consultaSeleccionada.diagnosticos}"
+												var="d">
+												<p>
+													🩺 <b>#{d.codigoCie10}</b> - #{d.descripcion}
+												</p>
+											</ui:repeat>
+
+										</h:panelGrid>
+
+										<!-- Medicamentos -->
+										<h3 style="margin-top: 25px;">💊 Medicamentos</h3>
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+                                        border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<ui:repeat
+												value="#{consultaBean.consultaSeleccionada.medicamentos}"
+												var="m">
+												<p>
+													💊 <b>#{m.nombreComercial}</b> — #{m.principioActivo}
+												</p>
+											</ui:repeat>
+
+										</h:panelGrid>
+
+										<!-- Exámenes -->
+										<h3 style="margin-top: 25px;">🧪 Exámenes</h3>
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+                                        border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<ui:repeat
+												value="#{consultaBean.consultaSeleccionada.examenes}"
+												var="e">
+												<p>
+													🧪 <b>#{e.tipoExamen}</b> — Resultado: #{e.resultado}
+												</p>
+											</ui:repeat>
+
+										</h:panelGrid>
+
+									</h:panelGrid>
+								</div>
+
+							</p:dialog>
+
+						</h:panelGroup>
+
+						<!-- Sin consultas -->
+						<h:outputText value="No tienes consultas registradas aún."
+							rendered="#{empty consultaBean.consultas}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+				</p:outputPanel>
+
+			</div>
+
+		</h:form>
+	</section>
+
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+
+	</footer>
+
+
+</body>
+</html>

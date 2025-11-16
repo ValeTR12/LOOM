@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/png" href="images/icon.png" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<title>Inicio</title>
+	<style>
+body {
+	background-color: #ededfd;
+	margin: 0;
+	font-family: Arial, sans-serif;
+}
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky; /* Banner flotante */
+	top: 20px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+}
+
+.banner-header img {
+	height: 50px;
+}
+
+.banner-header div:last-child {
+	transform: translateX(100px); /* desplaza el bloque a la izquierda */
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: #cecfff;
+	color: black;
+	border: none;
+	padding: 15px 45px; /* más grande que antes */
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em; /* texto un poco más grande */
+}
+
+/* Carrusel estático */
+.carousel-container {
+	width: 100%;
+	margin: 20px auto;
+}
+
+.ui-carousel .ui-carousel-item img {
+	width: 100%;
+	height: 300px;
+	object-fit: cover;
+	border-radius: 10px;
+}
+
+/* Imágenes debajo del carrusel */
+.links-container {
+	display: flex;
+	justify-content: center;
+	gap: 150px;
+	/* espacio entre imágenes, aumenta este valor para más separación */
+	margin: 35px 0;
+	/* espacio vertical respecto al carrusel y otros elementos */
+}
+
+.link-box {
+	text-align: center;
+}
+
+/* Imágenes redimensionables */
+.link-image {
+	width: 250px; /* ancho deseado */
+	height: auto; /* mantiene la proporción original */
+	border-radius: 15px; /* bordes redondeados opcional */
+	cursor: pointer;
+	transition: transform 0.3s;
+}
+
+.link-image:hover {
+	transform: scale(1.05);
+}
+
+.link-box span {
+	display: block;
+	margin-top: 12px;
+	color: black;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	.links-container {
+		flex-direction: column;
+		gap: 20px;
+	}
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+/* ==== Texto introductorio (Accede a tu cuenta) ==== */
+.access-intro {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 60px;
+}
+
+.access-intro h2 {
+	font-size: 2em;
+	color: #333366;
+	margin-bottom: 10px;
+}
+
+.access-intro p {
+	font-size: 1.2em;
+	color: #444;
+	max-width: 800px;
+	margin: 0 auto;
+	line-height: 1.5;
+}
+</style>
+</h:head>
+
+<body>
+
+	<!-- Banner flotante -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"> <img src="images/logoFondoBlanco.png"
+				alt="Logo" />
+			</a>
+			<div>
+				<a href="sobrenosotros.xhtml">Sobre nosotros</a> <a href="eps.xhtml"
+					class="eps-btn">EPS</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Carrusel estático -->
+	<p:carousel value="#{carouselBean.images}" var="img" numVisible="1"
+		circular="true" autoplayInterval="3000">
+		<div style="max-width: 2950px; margin: 0 auto;">
+			<p:graphicImage value="#{img}"
+				style="width:100%; height:auto; border-radius:100px;" />
+		</div>
+	</p:carousel>
+
+	<div class="access-intro">
+		<h2>Accede a tu cuenta</h2>
+		<p>Te invitamos a ingresar como médico o paciente para disfrutar
+			de todos nuestros servicios.</p>
+	</div>
+
+	<!-- Imágenes con hipervínculos debajo del carrusel -->
+	<div class="links-container">
+		<div class="link-box">
+			<a href="iniciosesionM.xhtml"> <img src="images/medico.png" alt="Medico"
+				class="link-image" /> <span>Medico</span>
+			</a>
+		</div>
+		<div class="link-box">
+			<a href="iniciosesionP.xhtml"> <img src="images/paciente.png"
+				alt="Paciente" class="link-image" /> <span>Paciente</span>
+			</a>
+		</div>
+	</div>
+
+
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+
+	</footer>
+
+
+</body>
+</html>

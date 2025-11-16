@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Inicio de Sesión</title>
+
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<style>
+body {
+	background-color: #e9eaff;
+	font-family: Arial, sans-serif;
+	margin: 0;
+}
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky;
+	top: 20px;
+	background-color: #cecfff; /* color de fondo */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px; /* igual al original */
+	height: 70px; /* mantiene la altura original */
+}
+
+.banner-header img {
+	height: 50px; /* mismo tamaño base */
+	transform: scale(2.5) translateX(-5px);
+	/* agranda visualmente el logo */
+	transform-origin: left center; /* agranda hacia la derecha */
+}
+
+.banner-header div:last-child {
+	transform: translateX(85px); /* desplaza el bloque a la izquierda */
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: white; /* botón blanco */
+	color: black;
+	border: none;
+	padding: 15px 45px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em;
+	transition: all 0.3s ease;
+}
+
+.banner-header .eps-btn:hover {
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+
+.quienes-somos {
+	position: relative;
+	width: 90%;
+	margin: 20px auto 40px auto;
+	/* 🔹 antes tenía 100px arriba, ahora más pegado al banner */
+	border-radius: 15px;
+	overflow: hidden;
+	height: 220px; /* 🔹 más corta */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Imagen de fondo */
+.quienes-somos img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+/* Recuadro traslúcido */
+.quienes-texto {
+	position: relative;
+	z-index: 1;
+	background: rgba(147, 150, 148, 0.45);
+	backdrop-filter: blur(10px);
+	padding: 15px 35px; /* 🔹 más pequeño */
+	border-radius: 15px;
+	max-width: 40%; /* 🔹 centrado y más estrecho */
+	text-align: center;
+	color: #fff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.quienes-texto h2 {
+	font-size: 1.8em;
+	margin: 0;
+	color: #fff;
+	font-weight: bold;
+}
+
+/* Login panel */
+.login-panel {
+	width: 400px;
+	margin: 0 auto;
+	background-color: white;
+	padding: 30px;
+	border-radius: 15px;
+	border: 3px solid #d9daff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login-panel h2 {
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 1.8em;
+}
+
+.login-panel .ui-inputtext, .login-panel .ui-password {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 25px; /* espacio entre campos y botón */
+	background-color: #e9eaff;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	font-size: 1em;
+	text-align: center; /* placeholder centrado */
+}
+
+.login-panel .login-btn {
+	width: 100%;
+	padding: 12px;
+	border: none;
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: #cecfff;
+	color: black;
+	font-size: 1em;
+	margin-bottom: 15px;
+}
+
+.login-panel .login-btn:hover {
+	background-color: #b8baed;
+}
+
+/* Responsivo */
+@media ( max-width : 500px) {
+	.login-panel {
+		width: 90%;
+		padding: 20px;
+	}
+}
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	.links-container {
+		flex-direction: column;
+		gap: 20px;
+	}
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+/* Contenedor general */
+.login-register-container {
+	position: relative;
+	width: 950px;
+	height: 550px;
+	margin: 80px auto 100px auto;
+	background-color: white;
+	border-radius: 30px;
+	overflow: hidden;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-register-container .overlay {
+	position: absolute;
+	left: 0; /* 👈 asegura que comience en el borde izquierdo */
+	width: 50%;
+	height: 100%;
+	background: linear-gradient(135deg, #cecfff, #a8a9f7);
+	border-radius: 0 80% 80% 0;
+	transition: all 0.8s ease;
+	z-index: 1;
+}
+
+/* Formularios */
+.form-container {
+	position: absolute;
+	top: 0;
+	width: 50%;
+	height: 100%;
+	padding: 60px 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.8s ease;
+	z-index: 2;
+}
+
+.form-container h2 {
+	font-size: 1.8rem;
+	color: #3b3b3b;
+	margin-bottom: 20px;
+}
+
+.form-container input {
+	width: 80%;
+	padding: 12px;
+	margin: 10px 0;
+	border: 1px solid #cfcfcf;
+	border-radius: 10px;
+	outline: none;
+}
+
+.form-container button {
+	width: 85%;
+	padding: 12px;
+	background-color: #a8a9f7;
+	border: none;
+	border-radius: 10px;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: 15px;
+	transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+	background-color: #9394f4;
+}
+
+.form-container a {
+	margin-top: 15px;
+	color: #3b3b3b;
+	text-decoration: none;
+	font-size: 0.9em;
+}
+
+/* Posición inicial */
+.login-container {
+	left: 50%;
+	opacity: 1;
+}
+
+.register-container {
+	left: 50%;
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* Cuando se activa el registro */
+.login-register-container.active .overlay {
+	left: 50%;
+	border-radius: 80% 0 0 80%;
+}
+
+.login-register-container.active .login-container {
+	left: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.login-register-container.active .register-container {
+	left: 0;
+	opacity: 1;
+	pointer-events: all;
+}
+/* Estilos para los enlaces de login/registro */
+.auth-link {
+	color: #4c4ede; /* Azul del banner, consistente con tu paleta */
+	text-decoration: none; /* Quita el subrayado por defecto */
+	font-weight: bold;
+	transition: color 0.3s ease, transform 0.2s ease;
+	display: inline-block;
+	margin-top: 10px; /* Un poco de espacio arriba */
+}
+
+/* Efecto al pasar el mouse */
+.auth-link:hover {
+	color: #2c2fa5; /* Azul más oscuro al pasar el cursor */
+	text-decoration: underline; /* Subrayado para indicar interacción */
+	transform: scale(1.05); /* Ligero aumento visual */
+}
+
+.small-btn {
+	padding: 2px 6px;
+	font-size: 0.7em;
+}
+</style>
+</h:head>
+
+<body>
+
+	<!-- Banner flotante -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"> <img src="images/logoblanco.png"
+				alt="Logo" />
+			</a>
+			<div>
+				<a href="sobrenosotros.xhtml">Sobre nosotros</a> <a href="eps.xhtml"
+					class="eps-btn">EPS</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- QUIÉNES SOMOS -->
+	<div class="quienes-somos">
+		<img src="images/iniciosesion.png" alt="Fondo Bienvenidos" />
+		<div class="quienes-texto">
+			<h2>Medico</h2>
+		</div>
+	</div>
+
+	<div class="login-register-container">
+		<div class="overlay"></div>
+		<h:form id="loginForm">
+			<p:growl id="mensajesLogin" showDetail="true" life="4000"
+				autoUpdate="true" globalOnly="false"
+				style="position: fixed; top: 20px; right: 20px; z-index: 9999;" />
+
+			<!-- Formulario de inicio de sesión -->
+			<div class="form-container login-container">
+				<h2>Inicia Sesión</h2>
+
+				<!-- Usuario -->
+				<p:inputText id="usernameLogin"
+					value="#{usuarioBean.loginUsuario.username}"
+					placeholder="Tarjeta Profesional Ej: TP1234" required="true" requiredMessage="Por favor ingrese su usuario"/>
+
+				<!-- Contraseña -->
+				<p:password id="passwordLogin"
+					value="#{usuarioBean.loginUsuario.contrasena}"
+					placeholder="Contraseña" required="true" requiredMessage="Por favor ingrese su contraseña"/>
+
+				<p:commandButton value="Entrar" action="#{usuarioBean.login}"
+					update="loginForm:mensajesLogin" styleClass="small-btn" />
+
+				<p>
+					¿No tienes cuenta? <a href="#" id="show-register" class="auth-link">Registrarse</a>
+				</p>
+			</div>
+
+		</h:form>
+
+		<h:form id="registroForm">
+			<p:growl id="mensajesRegistro" showDetail="true" life="4000"
+				autoUpdate="true" globalOnly="false"
+				style="position: fixed; top: 20px; right: 20px; z-index: 9999;" />
+
+			<div class="form-container register-container">
+				<h2>Regístrate</h2>
+
+				<p:inputText id="usernameReg"
+					value="#{usuarioBean.nuevoUsuario.username}"
+					placeholder="Tarjeta Profesional Ej: TP1234" required="true" requiredMessage="Por favor ingrese su usuario"/>
+
+				<p:password id="passwordReg" value="#{usuarioBean.contrasena}"
+					placeholder="Contraseña" required="true" requiredMessage="Por favor ingrese su contraseña"/>
+
+				<p:password id="confirmPasswordReg"
+					value="#{usuarioBean.confirmarContrasena}"
+					placeholder="Confirmar Contraseña" required="true" requiredMessage="Por favor confirme su contraseña"/>
+
+				<p:commandButton value="Crear cuenta"
+					action="#{usuarioBean.registrar}"
+					update="registroForm:mensajesRegistro" styleClass="small-btn" />
+				<p>
+					¿Ya tienes cuenta? <a href="#" id="show-login" class="auth-link">Iniciar
+						sesión</a>
+				</p>
+			</div>
+
+		</h:form>
+	</div>
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</footer>
+</body>
+<script>
+  const container = document.querySelector(".login-register-container");
+  const showRegister = document.getElementById("show-register");
+  const showLogin = document.getElementById("show-login");
+
+  showRegister.addEventListener("click", (e) => {
+    e.preventDefault();
+    container.classList.add("active");
+  });
+
+  showLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    container.classList.remove("active");
+  });
+</script>
+
+</html>

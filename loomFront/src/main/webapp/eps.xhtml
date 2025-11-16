@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Nuestros Aliados</title>
+
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<style>
+/* General */
+body {
+	background-color: #e9eaff;
+	font-family: Arial, sans-serif;
+	margin: 0;
+}
+
+/* Banner flotante */
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky;
+	top: 20px;
+	background-color: #cecfff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	height: 70px;
+}
+
+.banner-header img {
+	height: 50px;
+	transform: scale(2.5) translateX(-5px);
+	transform-origin: left center;
+}
+
+.banner-header div:last-child {
+	transform: translateX(85px);
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: white;
+	color: black;
+	border: none;
+	padding: 15px 45px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em;
+	transition: all 0.3s ease;
+}
+
+.banner-header .eps-btn:hover {
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+
+/* --- SECCIÓN QUIÉNES SOMOS --- */
+.quienes-somos {
+	position: relative;
+	width: 90%;
+	margin: 20px auto 40px auto;
+	/* 🔹 antes tenía 100px arriba, ahora más pegado al banner */
+	border-radius: 15px;
+	overflow: hidden;
+	height: 220px; /* 🔹 más corta */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Imagen de fondo */
+.quienes-somos img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+/* Recuadro traslúcido */
+.quienes-texto {
+	position: relative;
+	z-index: 1;
+	background: rgba(170, 173, 171, 0.45);
+	backdrop-filter: blur(10px);
+	padding: 15px 35px; /* 🔹 más pequeño */
+	border-radius: 15px;
+	max-width: 40%; /* 🔹 centrado y más estrecho */
+	text-align: center;
+	color: #fff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.quienes-texto h2 {
+	font-size: 1.8em;
+	margin: 0;
+	color: #fff;
+	font-weight: bold;
+}
+
+.quienes-texto p {
+	font-size: 1.1em;
+	color: #f5f5f5;
+	/* Un blanco un poco más suave para el texto secundario */
+	margin: 0;
+}
+
+/* Responsivo */
+@media ( max-width : 768px) {
+	.section-container {
+		flex-direction: column;
+	}
+	.section-container img {
+		width: 100%;
+		height: 200px;
+		border-radius: 15px 15px 0 0;
+	}
+	.section-text {
+		width: 100%;
+	}
+	.quienes-texto {
+		padding: 20px;
+		max-width: 90%;
+	}
+}
+
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	.links-container {
+		flex-direction: column;
+		gap: 20px;
+	}
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+
+/* Contenedor principal de las tarjetas EPS */
+.eps-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center; /* Centra los elementos en la última fila */
+	gap: 30px;
+	max-width: 1200px;
+	margin: 50px auto;
+}
+
+/* Cada tarjeta EPS */
+.eps-card {
+	background: #ffffff;
+	border: 2px solid #d0d0d0;
+	border-radius: 15px;
+	width: 320px;
+	height: 270px; /* 🔹 altura fija para todas */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between; /* empuja botones al fondo */
+	padding: 20px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eps-card:hover {
+	transform: translateY(-5px);
+}
+
+/* Título EPS */
+.eps-card h3 {
+  margin-top: 5px;
+  font-size: 1.3em;
+  color: #333;
+}
+/* Imagen dentro de las tarjetas */
+.eps-card img {
+  width: 160px;       /* 🔹 todas del mismo ancho */
+  height: 100px;      /* 🔹 todas de la misma altura */
+  object-fit: contain; /* 🔹 mantiene proporciones */
+  margin: 10px 0;
+}
+
+/* Botones dentro de las tarjetas */
+.eps-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: auto; /* 🔹 se asegura de que los botones bajen al fondo */
+}
+
+.eps-buttons a {
+	text-decoration: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	font-weight: bold;
+	font-size: 0.9em;
+	transition: all 0.3s ease;
+}
+
+/* Botón “Más info” */
+.btn-info {
+	background-color: #cecfff;
+	color: #000;
+	border: 1px solid #b6b7e3;
+}
+
+.btn-info:hover {
+	background-color: #b8baed;
+}
+
+/* Botón “Afíliate” */
+.btn-afiliate {
+	background-color: #4b53ff;
+	color: white;
+	border: none;
+}
+
+.btn-afiliate:hover {
+	background-color: #353bdb;
+}
+</style>
+</h:head>
+
+<body>
+
+	<!-- Banner -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="inicio.xhtml"><img src="images/logoblanco.png"
+				alt="Logo" /></a>
+			<div>
+				<a href="sobrenosotros.xhtml">Sobre nosotros</a> <a href="eps.xhtml"
+					class="eps-btn">EPS</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- QUIÉNES SOMOS -->
+	<div class="quienes-somos">
+		<img src="images/epsb.png" alt="Fondo quienes somos" />
+		<div class="quienes-texto">
+			<h2>¡Nuestros Aliados!</h2>
+			<p>Conoce las EPS que trabajan con nosotros</p>
+		</div>
+	</div>
+
+
+	<!-- SECCIÓN DE EPS -->
+	<section class="eps-section">
+		<div class="eps-container">
+			<!-- Tarjeta 1 -->
+			<div class="eps-card">
+				<h3>EPS Sura</h3>
+				<img src="images/sura.png" alt="Logo EPS Sura" />
+				<div class="eps-buttons">
+					<a href="https://www.epssura.com" target="_blank" class="btn-info">Más
+						info</a> <a href="https://www.epssura.com/afiliate" target="_blank"
+						class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 2 -->
+			<div class="eps-card">
+				<h3>Compensar EPS</h3>
+				<img src="images/compensar.png" alt="Logo Compensar" />
+				<div class="eps-buttons">
+					<a href="https://corporativo.compensar.com/salud/conoce-mas-pbs"
+						target="_blank" class="btn-info">Más info</a> <a
+						href="https://corporativo.compensar.com/afiliaciones/afiliacion-a-caja-personas"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 3 -->
+			<div class="eps-card">
+				<h3>Sanitas EPS</h3>
+				<img src="images/sanitas.png" alt="Logo Sanitas" />
+				<div class="eps-buttons">
+					<a
+						href="https://www.epssanitas.com/usuarios/web/nuevo-portal-eps#gsc.tab=0"
+						target="_blank" class="btn-info">Más info</a> <a
+						href="https://www.epssanitas.com/usuarios/web/nuevo-portal-eps/no-eres-afiliado#gsc.tab=0"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 4 -->
+			<div class="eps-card">
+				<h3>Famisanar</h3>
+				<img src="images/famisanar.jpg" alt="Logo Famisanar" />
+				<div class="eps-buttons">
+					<a href="https://www.famisanar.com.co" target="_blank"
+						class="btn-info">Más info</a> <a
+						href="https://www.famisanar.com.co/afiliados/pbs" target="_blank"
+						class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 5 -->
+			<div class="eps-card">
+				<h3>Coosalud</h3>
+				<img src="images/coosalud.png" alt="Logo Coosalud" />
+				<div class="eps-buttons">
+					<a href="https://coosalud.com" target="_blank" class="btn-info">Más
+						info</a> <a href="https://coosalud.com/afiliados-como-afiliarse"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 6 -->
+			<div class="eps-card">
+				<h3>Nueva EPS</h3>
+				<img src="images/nuevaeps.png" alt="Logo Nueva EPS" />
+				<div class="eps-buttons">
+					<a href="https://www.nuevaeps.com.co" target="_blank"
+						class="btn-info">Más info</a> <a
+						href="https://www.nuevaeps.com.co/empresas/afiliaciones"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 7 -->
+			<div class="eps-card">
+				<h3>Salud Total</h3>
+				<img src="images/saludtotal.png" alt="Logo Salud Total" />
+				<div class="eps-buttons">
+					<a href="https://saludtotal.com.co" target="_blank"
+						class="btn-info">Más info</a> <a
+						href="https://saludtotal.com.co/como-afiliarte-a-salud-total-eps-s"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+
+			<!-- Tarjeta 8 -->
+			<div class="eps-card">
+				<h3>Mutual Ser</h3>
+				<img src="images/mutualser.png" alt="Logo Mutual Ser" />
+				<div class="eps-buttons">
+					<a href="https://www.mutualser.com" target="_blank"
+						class="btn-info">Más info</a> <a
+						href="https://www.mutualser.com/ser-afiliado/afiliacion-y-novedades"
+						target="_blank" class="btn-afiliate">Afíliate</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
