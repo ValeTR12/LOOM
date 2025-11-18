@@ -10,9 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.loom.dto.ConsultaDTO;
+import co.edu.unbosque.loom.dto.MedicamentoPorEpsDTO;
 import co.edu.unbosque.loom.dto.MedicoDTO;
+import co.edu.unbosque.loom.dto.PacienteDTO;
+import co.edu.unbosque.loom.dto.TopMedicosDTO;
+import co.edu.unbosque.loom.dto.TopMedicosView;
 import co.edu.unbosque.loom.model.Consulta;
 import co.edu.unbosque.loom.model.Medico;
+import co.edu.unbosque.loom.model.Paciente;
 import co.edu.unbosque.loom.repository.ConsultaRepository;
 import co.edu.unbosque.loom.repository.MedicoRepository;
 
@@ -73,5 +78,13 @@ public class MedicoService {
 
 	}
 	
-
+	public List<MedicoDTO> buscarPorEps(String nombreEps) {
+		ArrayList<Medico> entityList = (ArrayList<Medico>) medicoRepo.findMedicosPorEps(nombreEps);
+		ArrayList<MedicoDTO> dtoList = new ArrayList<>();
+		entityList.forEach((entity) -> {
+			MedicoDTO dto = modelMapper.map(entity, MedicoDTO.class);
+			dtoList.add(dto);
+		});
+		return dtoList;
+	}
 }

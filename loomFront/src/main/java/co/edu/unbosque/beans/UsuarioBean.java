@@ -10,6 +10,7 @@ import co.edu.unbosque.model.persistence.UsuarioDAO;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -20,6 +21,7 @@ public class UsuarioBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<UsuarioDTO> usuarios;
 	private UsuarioDTO loginUsuario;
+	private UsuarioDTO loginAdmin;
 	private UsuarioDTO usuarioLogueado;
 	private String contrasena;
 	private String confirmarContrasena;
@@ -36,6 +38,7 @@ public class UsuarioBean implements Serializable {
 		loginUsuario = new UsuarioDTO();
 		usuarioLogueado = new UsuarioDTO();
 		nuevoUsuario = new UsuarioDTO();
+		loginAdmin = new UsuarioDTO();
 	}
 
 	public String registrar() {
@@ -77,15 +80,21 @@ public class UsuarioBean implements Serializable {
 		String cuerpo = uDAO.registrar(nuevoUsuario);
 
 		if (cuerpo.equals("Registro exitoso. Contraseña actualizada.")) {
-			//System.out.println(nuevoUsuario.getRol().getNombreRol());
 			mostrarMensaje("Éxito", cuerpo);
 			registroExitoso = true;
 			// adminBean.cargarUsuarios();
 			this.nuevoUsuario = new UsuarioDTO();
+			if (getPaginaActual().equals("iniciosesionM.xhtml")) {
+				return "iniciosesionM.xhtml?faces-redirect=true";
+			}
 			return "iniciosesionP.xhtml?faces-redirect=true";
-		} else {
+			
+		}else {
 			mostrarMensaje("Error", cuerpo);
 			registroExitoso = false;
+			if (getPaginaActual().equals("iniciosesionM.xhtml")) {
+				return "iniciosesionM.xhtml?faces-redirect=true";
+			}
 			return "iniciosesionP.xhtml?faces-redirect=true";
 		}
 	}
@@ -126,7 +135,8 @@ public class UsuarioBean implements Serializable {
 					usuarioLogueado);
 			loginUsuario = new UsuarioDTO();
 			return "medico.xhtml?faces-redirect=true";
-		} else if (response != null && response.equals("PACIENTE")) {
+		}
+		if (response != null && response.equals("PACIENTE")) {
 			usuarioLogueado = loginUsuario;
 			System.out.println("Guardando en sesión: " + usuarioLogueado.getUsername());
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogueado",
@@ -138,6 +148,82 @@ public class UsuarioBean implements Serializable {
 			return null;
 		}
 	}
+	
+	public String loginAdmin() {
+		String username = uDAO.iniciarsesionAdmin(loginAdmin);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogueado",
+				username);
+		if(username.equals("ADMIN")) {
+			return "admin.xhtml?faces-redirect=true";
+		}
+		return "index.xhtml?faces-redirect=true";
+	}
+	
+	public String cerrarSesion() {
+	    // Invalidar la sesión actual
+	    FacesContext facesContext = FacesContext.getCurrentInstance();
+	    facesContext.getExternalContext().invalidateSession();
+	    
+	    // Limpiar la variable de usuario logueado por si acaso
+	    usuarioLogueado = null;
+
+	    // Redirigir al login con faces-redirect para que la URL se actualice
+	    return "inicio.xhtml?faces-redirect=true"; // o "iniciosesionM.xhtml" según corresponda
+	}
+	
+	public void verificarSesion() {
+	    FacesContext context = FacesContext.getCurrentInstance();
+	    Object usuarioLogueado = context.getExternalContext().getSessionMap().get("usuarioLogueado");
+
+	    // Obtén la URL solicitada
+	    String paginaSolicitada = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURI();
+
+	    try {
+	        if (usuarioLogueado == null) {
+	            // Si no hay sesión, redirige siempre a index.xhtml
+	            context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
+	            context.responseComplete();
+	        } else {
+	            // Usuario logueado
+	            // Obtén la página actual permitida desde la sesión
+	            String paginaActual = (String) context.getExternalContext().getSessionMap().get("paginaActual");
+	            if (paginaActual == null) {
+	                // Si no hay página en sesión, inicializa con la actual
+	                paginaActual = paginaSolicitada;
+	                context.getExternalContext().getSessionMap().put("paginaActual", paginaActual);
+	            }
+
+	            // Si intenta acceder a otra página diferente, redirige a la misma que estaba
+	            if (!paginaSolicitada.equals(paginaActual)) {
+	                context.getExternalContext().redirect(paginaActual);
+	                context.responseComplete();
+	            }
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
+	public void verificarCierre() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Object usuarioLogueado = context.getExternalContext().getSessionMap().get("usuarioLogueado");
+
+		if (usuarioLogueado == null) {
+			try {
+				if(getPaginaActual().equals("paciente.xhtml")) {
+				context.getExternalContext().redirect("paciente.xhtml");
+				}
+				if(getPaginaActual().equals("medico.xhtml")){
+					context.getExternalContext().redirect("medico.xhtml");
+				}else {
+				context.getExternalContext().redirect("index.xhtml");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void logueado() {
 		usuarioLogueado = uDAO.buscarDocumento(loginUsuario.getDocumento());
@@ -146,19 +232,6 @@ public class UsuarioBean implements Serializable {
 
 	public boolean isRegistroExitoso() {
 		return registroExitoso;
-	}
-
-	public void verificarSesion() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Object usuarioLogueado = context.getExternalContext().getSessionMap().get("usuarioLogueado");
-
-		if (usuarioLogueado == null) {
-			try {
-				context.getExternalContext().redirect("index.xhtml");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	public String traerNombre(Integer id) {
@@ -194,6 +267,14 @@ public class UsuarioBean implements Serializable {
 		// Si solo quieres el nombre de la página:
 		String pagina = path.substring(path.lastIndexOf("/") + 1);
 		return pagina;
+	}
+
+	public UsuarioDTO getLoginAdmin() {
+		return loginAdmin;
+	}
+
+	public void setLoginAdmin(UsuarioDTO loginAdmin) {
+		this.loginAdmin = loginAdmin;
 	}
 
 	public UsuarioDTO getLoginUsuario() {

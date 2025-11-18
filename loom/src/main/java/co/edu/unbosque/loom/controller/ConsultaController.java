@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.loom.service.ConsultaService;
 import co.edu.unbosque.loom.dto.ConsultaDTO;
+import co.edu.unbosque.loom.dto.EpsCargaMensualDTO;
 import co.edu.unbosque.loom.dto.PacienteDTO;
+import co.edu.unbosque.loom.dto.TopEnfermedadesDTO;
+import co.edu.unbosque.loom.dto.TopMedicosDTO;
 import co.edu.unbosque.loom.model.Consulta;
 
 @RestController
@@ -74,5 +77,25 @@ public class ConsultaController {
 	    return new ResponseEntity<>(pacientes, HttpStatus.OK);
 	}
 	
+	@GetMapping("/epscargamensual")
+	public ResponseEntity<List<EpsCargaMensualDTO>> mostrarEpsCargaMensual() {
+		List<EpsCargaMensualDTO> eps = consultaServ.obtenerEpsCargaMensual();
+
+		if (eps.isEmpty()) {
+			return new ResponseEntity<>(eps, HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<>(eps, HttpStatus.OK);
+		}
+	}
 	
+	@GetMapping("/topmedicos")
+	public ResponseEntity<List<TopMedicosDTO>> mostrarTopMedicos() {
+		List<TopMedicosDTO> top = consultaServ.obtenerTopMedicos();
+
+		if (top.isEmpty()) {
+			return new ResponseEntity<>(top, HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<>(top, HttpStatus.OK);
+		}
+	}
 }

@@ -21,6 +21,11 @@ public class UsuarioDAO {
 		String cuerpo = ExternalHTTPRequestHandler.doGetUsuario("http://localhost:8082/usuario/login", usuario);
 		return cuerpo;
 	}
+	
+	public String iniciarsesionAdmin(UsuarioDTO usuario) {
+		String cuerpo = ExternalHTTPRequestHandler.doGetUsuario("http://localhost:8082/usuario/loginadmin", usuario);
+		return cuerpo;
+	}
 
 	public String registrar(UsuarioDTO usuario) {
 		String cuerpo = ExternalHTTPRequestHandler.doGetUsuario("http://localhost:8082/usuario/register", usuario);

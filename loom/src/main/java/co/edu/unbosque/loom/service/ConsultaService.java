@@ -8,7 +8,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unbosque.loom.dto.ConsultaDTO;
+import co.edu.unbosque.loom.dto.EpsCargaMensualDTO;
+import co.edu.unbosque.loom.dto.EpsCargaMensualView;
 import co.edu.unbosque.loom.dto.PacienteDTO;
+import co.edu.unbosque.loom.dto.TopEnfermedadesDTO;
+import co.edu.unbosque.loom.dto.TopEnfermedadesView;
+import co.edu.unbosque.loom.dto.TopMedicosDTO;
+import co.edu.unbosque.loom.dto.TopMedicosView;
 import co.edu.unbosque.loom.dto.UsuarioDTO;
 import co.edu.unbosque.loom.model.Consulta;
 import co.edu.unbosque.loom.model.Paciente;
@@ -107,4 +113,40 @@ public class ConsultaService {
 
 		return pacientesDTO;
     }
+	
+	public List<EpsCargaMensualDTO> obtenerEpsCargaMensual() {
+		List<EpsCargaMensualDTO> dtos = new ArrayList<>();
+		List<EpsCargaMensualView> proyecciones = consultaRepo.findEpsCargaMensual();
+		for (EpsCargaMensualView proyeccion : proyecciones) {
+			dtos.add(toDTOEpsCargaMensual(proyeccion));
+		}
+
+		return dtos;
+	}
+	
+	private EpsCargaMensualDTO toDTOEpsCargaMensual(EpsCargaMensualView view) {
+		EpsCargaMensualDTO dto = new EpsCargaMensualDTO();
+		dto.setMes(view.getMes());
+		dto.setNombre(view.getNombre());
+		dto.setTotalConsultas(view.getTotalConsultas());
+	    return dto;
+	}
+	
+	public List<TopMedicosDTO> obtenerTopMedicos() {
+		List<TopMedicosDTO> dtos = new ArrayList<>();
+		List<TopMedicosView> proyecciones = consultaRepo.findTopMedicosUltimoAno();
+		for (TopMedicosView proyeccion : proyecciones) {
+			dtos.add(toDTOTopMedicos(proyeccion));
+		}
+
+		return dtos;
+	}
+	
+	private TopMedicosDTO toDTOTopMedicos(TopMedicosView view) {
+		TopMedicosDTO dto = new TopMedicosDTO();
+		dto.setIdMedico(view.getIdMedico());
+		dto.setNombreCompleto(view.getNombreCompleto());
+		dto.setTotalConsultas(view.getTotalConsultas());
+	    return dto;
+	}
 }

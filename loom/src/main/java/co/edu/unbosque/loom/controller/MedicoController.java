@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.loom.dto.ConsultaDTO;
 import co.edu.unbosque.loom.dto.MedicoDTO;
+import co.edu.unbosque.loom.dto.PacienteDTO;
 import co.edu.unbosque.loom.model.Consulta;
 import co.edu.unbosque.loom.service.MedicoService;
 
@@ -47,5 +48,15 @@ public class MedicoController {
 	    }
 
 	    return new ResponseEntity<>(medico, HttpStatus.OK);
+	}
+	
+	@GetMapping("/obtenerporeps")
+	public ResponseEntity<List<MedicoDTO>> mostrarPacientesPorEps(@RequestParam String nombreEps) {
+		List<MedicoDTO> p = medicoServ.buscarPorEps(nombreEps);
+		if (p.isEmpty()) {
+			return new ResponseEntity<>(p, HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<>(p, HttpStatus.OK);
+		}
 	}
 }

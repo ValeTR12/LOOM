@@ -37,7 +37,7 @@ public class UsuarioController {
 	public ResponseEntity<?> login(@RequestBody UsuarioDTO loginRequest) {
 		try {
 			UsuarioDTO usuario = usuarioService.buscarPorUsername(loginRequest.getUsername());
-			
+
 			if (usuario == null) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado o no afiliado");
 			}
@@ -49,11 +49,13 @@ public class UsuarioController {
 			}
 
 			// ✅ Validar contraseña encriptada
-			if (!passwordEncoder.matches(loginRequest.getContrasena(), usuario.getContrasena())&& loginRequest.getUsername().equals(usuario.getUsername())) {
+			if (!passwordEncoder.matches(loginRequest.getContrasena(), usuario.getContrasena())
+					&& loginRequest.getUsername().equals(usuario.getUsername())) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
 			}
-			
-			System.out.println("Usted entro como:" + usuario.getRol().getNombreRol() + "\nSu nombre es:" + usuario.getPrimerNombre());
+
+			System.out.println("Usted entro como:" + usuario.getRol().getNombreRol() + "\nSu nombre es:"
+					+ usuario.getPrimerNombre());
 
 			// ✅ Login exitoso → devolver rol o token
 			return ResponseEntity.ok(new Rol(usuario.getRol().getNombreRol(), usuario.getRol().getDescripcion()));
@@ -69,7 +71,7 @@ public class UsuarioController {
 	public ResponseEntity<?> register(@RequestBody UsuarioDTO registerRequest) {
 
 		UsuarioDTO existente = usuarioService.buscarPorUsername(registerRequest.getUsername());
-		
+
 		if (existente == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No estás afiliado a nuestras EPS aliadas.");
 		}
@@ -98,7 +100,7 @@ public class UsuarioController {
 			return new ResponseEntity<>(usuarios, HttpStatus.OK);
 		}
 	}
-	
+
 	@GetMapping("/obtener")
 	public ResponseEntity<UsuarioDTO> obtenerPorDocumento(@RequestParam String usuario) {
 		UsuarioDTO encontrado = usuarioService.buscarPorDocumento(usuario);
@@ -110,7 +112,7 @@ public class UsuarioController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping("/obtenerporid")
 	public ResponseEntity<UsuarioDTO> obtenerPorIdUsuario(@RequestParam Integer id) {
 		UsuarioDTO encontrado = usuarioService.buscarPorId(id);
@@ -120,6 +122,36 @@ public class UsuarioController {
 			return new ResponseEntity<>(encontrado, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@PostMapping("/loginadmin")
+	public ResponseEntity<?> loginAdmin(@RequestBody UsuarioDTO loginRequest) {
+		try {
+			UsuarioDTO usuario = usuarioService.buscarPorUsername(loginRequest.getUsername());
+
+			if (usuario == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Administrador no encontrado");
+			}
+
+			if (usuario.getUsername().equals("AdminMavayir")) {
+
+				if (passwordEncoder.matches(loginRequest.getContrasena(), usuario.getContrasena())
+						&& loginRequest.getUsername().equals(usuario.getUsername())) {
+
+					return ResponseEntity.ok(new Rol(usuario.getRol().getNombreRol(), usuario.getRol().getDescripcion()));
+
+				}else {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
+
+				}
+			}
+
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Persona NO autorizada");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor");
 		}
 	}
 }

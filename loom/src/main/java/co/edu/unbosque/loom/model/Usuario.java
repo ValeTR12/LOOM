@@ -47,6 +47,11 @@ public class Usuario {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Usuario(String username, String contrasena) {
+		super();
+		this.contrasena = contrasena;
+		this.username = username;
+	}
 
 	public Usuario(String username, String documento, String primerNombre, String segundoNombre, String primerApellido,
 			String segundoApellido, String direccion, String ciudad, String contrasena, Rol rol,
@@ -64,14 +69,10 @@ public class Usuario {
 		this.rol = rol;
 		this.contactos = contactos;
 	}
-
-
-	
 	
 	public String getUsername() {
 		return username;
 	}
-
 
 	public void setUsername(String username) {
 		this.username = username;

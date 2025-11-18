@@ -21,5 +21,17 @@
 		<managed-bean-class>co.edu.unbosque.beans.MedicoBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>PacienteBean</managed-bean-name>
+		<managed-bean-class>co.edu.unbosque.beans.PacienteBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>GraficoBean</managed-bean-name>
+		<managed-bean-class>co.edu.unbosque.beans.GraficoBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 
 </faces-config>

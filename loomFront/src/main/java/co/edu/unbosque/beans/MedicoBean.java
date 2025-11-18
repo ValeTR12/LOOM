@@ -109,6 +109,11 @@ public class MedicoBean implements Serializable {
 		return med.getEspecialidad();
 	}
 	
+	public String obtenerNombreDoctor(Integer id) {
+		MedicoDTO med = mDAO.findById(id);
+		return med.getPrimerNombre() + " " + med.getPrimerApellido();
+	}
+	
 	public void cambiarVista(String vista) {
 		this.vista = vista;
 	}

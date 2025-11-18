@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import co.edu.unbosque.loom.dto.EpsCargaMensualView;
+import co.edu.unbosque.loom.dto.TopMedicosView;
 import co.edu.unbosque.loom.model.Consulta;
 
 public interface ConsultaRepository extends CrudRepository<Consulta, Integer> {
@@ -20,6 +22,7 @@ public interface ConsultaRepository extends CrudRepository<Consulta, Integer> {
 			""")
 	List<Consulta> findByPaciente(@Param("username") String username);
 	
+	//MEDICO
 	@Query(value = """
 	        SELECT *
 	        FROM consulta
@@ -37,6 +40,32 @@ public interface ConsultaRepository extends CrudRepository<Consulta, Integer> {
 	    """, nativeQuery = true)
 	List<Integer> findPacientesConPermisoVigente(Integer idMedico);
 
+	@Query(value = """
+		    SELECT m.id_eps AS idEps,
+		           e.nombre_eps AS nombre,
+		           MONTH(c.fecha_consulta) AS mes,
+		           COUNT(c.id_consulta) AS totalConsultas
+		    FROM consulta c
+		    JOIN medico m ON c.id_medico = m.id_medico
+		    JOIN eps e ON m.id_eps = e.id_eps
+		    GROUP BY m.id_eps, e.nombre_eps, MONTH(c.fecha_consulta)
+		    ORDER BY totalConsultas DESC
+		""", nativeQuery = true)
+		List<EpsCargaMensualView> findEpsCargaMensual();
 
+	
+	@Query(value = """
+		       SELECT m.id_medico AS idMedico,
+		              CONCAT(u.primer_nombre, ' ', u.primer_apellido) AS nombreCompleto,
+		              COUNT(c.id_consulta) AS totalConsultas
+		       FROM consulta c
+		       JOIN medico m ON m.id_medico = c.id_medico
+		       JOIN usuario u ON u.id_usuario = m.id_medico
+		       WHERE c.fecha_consulta >= CURRENT_DATE - INTERVAL 365 DAY
+		       GROUP BY m.id_medico, u.primer_nombre, u.primer_apellido
+		       ORDER BY totalConsultas DESC
+		       LIMIT 10
+		""", nativeQuery = true)
+		List<TopMedicosView> findTopMedicosUltimoAno();
 
 }

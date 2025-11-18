@@ -11,29 +11,29 @@
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 	<title>Medico</title>
+</h:head>
 	<style>
 body {
-    position: relative;
-    margin: 0;
-    padding: 0;
+	position: relative;
+	margin: 0;
+	padding: 0;
 }
 
 /* Fondo con transparencia */
 body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("images/fmedico.png"); /* tu imagen */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.4; /* transparencia */
-    z-index: -1; /* queda detrás del contenido */
+	content: "";
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("images/fmedico.png"); /* tu imagen */
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	opacity: 0.4; /* transparencia */
+	z-index: -1; /* queda detrás del contenido */
 }
-
 
 /* Banner flotante */
 .banner-container {
@@ -171,24 +171,23 @@ footer {
 }
 /* Quitar estilo por defecto de PrimeFaces */
 .tab-btn.ui-button {
-    background: transparent !important;
-    border: 2px solid #cecfff !important;
-    color: #333 !important;
-    box-shadow: none !important;
+	background: transparent !important;
+	border: 2px solid #cecfff !important;
+	color: #333 !important;
+	box-shadow: none !important;
 }
 
 /* Hover personalizado */
 .tab-btn.ui-button:hover {
-    background-color: #cecfff !important;
-    color: black !important;
-    transform: translateY(-3px);
+	background-color: #cecfff !important;
+	color: black !important;
+	transform: translateY(-3px);
 }
 
 /* Elimina el color azul de foco */
-.tab-btn.ui-state-focus,
-.tab-btn.ui-state-hover {
-    background-color: #cecfff !important;
-    color: black !important;
+.tab-btn.ui-state-focus, .tab-btn.ui-state-hover {
+	background-color: #cecfff !important;
+	color: black !important;
 }
 /* Contenedor de contenido (opcional, si no hay modales) */
 .tab-content {
@@ -245,50 +244,62 @@ footer {
 		grid-template-columns: repeat(1, 1fr);
 	}
 }
+
 .custom-dialog {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important; /* centra vertical y horizontal */
-    max-height: calc(100vh - 60px) !important; /* margen simétrico arriba/abajo */
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	transform: translate(-50%, -50%) !important;
+	/* centra vertical y horizontal */
+	max-height: calc(100vh - 60px) !important;
+	/* margen simétrico arriba/abajo */
 }
 
 /* Quitar scroll del dialog completo */
 .custom-dialog .ui-dialog-content {
-    overflow: hidden !important;      /* ❗ obligatorio */
-    padding: 0 !important;            /* evita padding adicional que empuja */
+	overflow: hidden !important; /* ❗ obligatorio */
+	padding: 0 !important; /* evita padding adicional que empuja */
 }
 
 /* Dejar scroll SOLO dentro del contenido */
 .dialog-scroll {
-    max-height: calc(100vh - 180px) !important;
-    overflow-y: auto !important;
-    padding: 20px !important;
-    box-sizing: border-box !important;
+	max-height: calc(100vh - 180px) !important;
+	overflow-y: auto !important;
+	padding: 20px !important;
+	box-sizing: border-box !important;
 }
 /* Forzar color negro en los enlaces PrimeFaces */
-.p-link,
-.p-link * {
-    color: black !important;
+.p-link, .p-link * {
+	color: black !important;
 }
-.ui-commandlink,
-.ui-commandlink * {
-    color: black !important;
+
+.ui-commandlink, .ui-commandlink * {
+	color: black !important;
 }
 </style>
-</h:head>
+
+<f:metadata>
+		<f:event type="preRenderView"
+			listener="#{usuarioBean.verificarSesion}" />
+</f:metadata>
+
+
 <body>
 
 	<!-- Banner flotante -->
 	<div class="banner-container">
 		<div class="banner-header">
-			<a href="inicio.xhtml"> <img src="images/logoFondoBlanco.png"
+			<a href="medico.xhtml"> <img src="images/logoFondoBlanco.png"
 				alt="Logo" />
 			</a>
 			<div>
-				<a href="inicio.xhtml" class="eps-btn"> <i
-					class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-				</a>
+				<h:form>
+					<h:commandLink action="#{usuarioBean.cerrarSesion}"
+						styleClass="eps-btn" ajax="false">
+						<i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+    </h:commandLink>
+				</h:form>
+
 			</div>
 		</div>
 	</div>
@@ -324,7 +335,7 @@ footer {
 
 
 				</div>
-	
+
 				<!-- ===========================
                      CONTENEDOR GENERAL
                      =========================== -->
@@ -632,7 +643,8 @@ footer {
 
 											<p>
 												Paciente:
-												<h:outputText value="#{usuarioBean.traerNombre(c.idPaciente)}" />
+												<h:outputText
+													value="#{usuarioBean.traerNombre(c.idPaciente)}" />
 											</p>
 
 											<p>
@@ -653,11 +665,12 @@ footer {
              MODAL DE DETALLES
              =========================== -->
 							<p:dialog header="Detalles de la Consulta"
-								widgetVar="dialogConsulta" styleClass="custom-dialog" modal="true" responsive="true"
-								width="550" height="500" style="overflow:hidden;">
+								widgetVar="dialogConsulta" styleClass="custom-dialog"
+								modal="true" responsive="true" width="550" height="500"
+								style="overflow:hidden;">
 
 								<div class="dialog-scroll">
-								
+
 									<h:panelGrid columns="1" id="dialogContenido"
 										style="width:100%;">
 

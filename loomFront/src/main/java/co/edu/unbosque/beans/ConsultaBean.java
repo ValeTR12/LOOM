@@ -3,7 +3,6 @@ package co.edu.unbosque.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import co.edu.unbosque.beans.model.ConsultaDTO;
 import co.edu.unbosque.beans.model.UsuarioDTO;
 import co.edu.unbosque.model.persistence.ConsultaDAO;
@@ -30,7 +29,6 @@ public class ConsultaBean implements Serializable {
 
 	// @Inject
 	// private PacienteDAO pDAO;
-	
 
 	@PostConstruct
 	public void init() {
@@ -99,8 +97,6 @@ public class ConsultaBean implements Serializable {
 		consultas = cDAO.getConsultasPorPaciente(usuarioLogueado.getUsername());
 		System.out.println(consultas.size());
 	}
-
-	
 
 	public UsuarioDTO getUsuarioLogueado() {
 		return usuarioLogueado;

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Administrador - LOOM</title>
+
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<style>
+body {
+	background-color: #e9eaff;
+	font-family: Arial, sans-serif;
+	margin: 0;
+}
+
+.banner-container {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 15px;
+	overflow: hidden;
+	position: sticky;
+	top: 20px;
+	background-color: #cecfff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.banner-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	height: 70px;
+}
+
+.banner-header img {
+	height: 50px;
+	transform: scale(2.5) translateX(-5px);
+	transform-origin: left center;
+}
+
+.banner-header div:last-child {
+	transform: translateX(85px);
+}
+
+.banner-header a {
+	text-decoration: none;
+	color: black;
+	margin-right: 100px;
+	font-weight: bold;
+}
+
+.banner-header a:hover {
+	text-decoration: underline;
+}
+
+.banner-header .eps-btn {
+	background-color: white;
+	color: black;
+	border: none;
+	padding: 15px 45px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.8em;
+	transition: all 0.3s ease;
+}
+
+.banner-header .eps-btn:hover {
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+
+.login-btn {
+	width: 100%;
+	padding: 12px;
+	background: #b1a6ff !important;
+	border: none !important;
+	border-radius: 8px !important;
+	font-size: 16px;
+	font-weight: bold;
+	color: white !important;
+	cursor: pointer;
+	transition: 0.2s;
+	margin-top: 5px;
+}
+
+/* Hover del botón */
+.login-btn:hover {
+	background: #b7b6ff !important;
+}
+/* Pie de página */
+footer {
+	background-color: #b8baed;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 50px;
+	margin-top: 50px;
+	border-radius: 15px;
+	flex-wrap: wrap;
+}
+
+.footer-left img {
+	height: 50px;
+}
+
+.footer-left p, .footer-right p {
+	color: black;
+	margin: 5px 0;
+}
+
+.social-icons img {
+	height: 30px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+@media ( max-width : 768px) {
+	.links-container {
+		flex-direction: column;
+		gap: 20px;
+	}
+	footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+</style>
+
+	<f:metadata>
+		<f:event type="preRenderView"
+			listener="#{graficoBean.verificarSesion}" />
+	</f:metadata>
+</h:head>
+
+<body>
+	<!-- Banner flotante -->
+	<div class="banner-container">
+		<div class="banner-header">
+			<a href="admin.xhtml"> <img src="images/logoblanco.png"
+				alt="Logo" />
+			</a>
+			<div>
+				<h:form>
+					<h:commandLink action="#{usuarioBean.cerrarSesion}"
+						styleClass="eps-btn" ajax="false">
+						<i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+    </h:commandLink>
+				</h:form>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!-- TITULO PRINCIPAL -->
+	<div
+		style="max-width: 1100px; margin: 50px auto 20px auto; text-align: left;">
+		<!-- Título grande con colores distintos -->
+		<h1 style="margin: 0; font-weight: bold; font-size: 32px;">
+			<span style="color: black;">INFORMACIÓN</span> <span
+				style="color: #8a79e6;">PACIENTES</span>
+			<!-- tono más oscuro que el boton -->
+		</h1>
+
+		<!-- Subtítulo -->
+		<h3
+			style="margin: 5px 0 10px 0; font-weight: normal; color: #555; font-size: 18px;">
+			Datos relevantes de pacientes y perfiles clínicos</h3>
+
+		<!-- Línea horizontal -->
+		<hr
+			style="border: none; height: 2px; background-color: #8a79e6; width: 100%; max-width: 1100px; margin-bottom: 50px;" />
+	</div>
+
+	<!-- Buscar Pacientes por EPS -->
+	<div style="max-width: 1100px; margin: auto;">
+		<h2
+			style="text-align: center; margin-bottom: 30px; font-weight: normal;">
+			Buscar Pacientes por EPS</h2>
+
+		<p:outputPanel
+			style="background-color: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+           display: flex; gap: 20px; border-radius: 10px; height: 500px; margin-bottom: 60px;">
+
+			<!-- LADO IZQUIERDO: COMBO + BOTON -->
+			<div
+				style="display: flex; flex-direction: column; gap: 10px; width: max-content;">
+				<h:form id="formPacientes">
+					<div style="display: flex; flex-direction: column; gap: 5px;">
+						<h:outputLabel for="nombreEps" value="EPS:" />
+						<p:selectOneMenu id="nombreEps" value="#{graficoBean.nombreEps}"
+							style="width: 180px;">
+							<f:selectItem itemLabel="Compensar" itemValue="Compensar" />
+							<f:selectItem itemLabel="Coosalud" itemValue="Coosalud" />
+							<f:selectItem itemLabel="Famisanar" itemValue="Famisanar" />
+							<f:selectItem itemLabel="Salud Total" itemValue="Salud%20Total" />
+							<f:selectItem itemLabel="Nueva EPS" itemValue="Nueva%20EPS" />
+							<f:selectItem itemLabel="Mutual Ser" itemValue="Mutual%20Ser" />
+							<f:selectItem itemLabel="SURA" itemValue="SURA" />
+							<f:selectItem itemLabel="Sanitas" itemValue="Sanitas" />
+						</p:selectOneMenu>
+					</div>
+
+					<p:commandButton value="Cargar"
+						action="#{graficoBean.cargarListaPacientes}"
+						update="tablaPacientes" styleClass="login-btn"
+						style="margin-top: 10px;" />
+				</h:form>
+			</div>
+
+			<!-- LADO DERECHO: TABLA CON SCROLL -->
+			<div style="flex: 2; overflow-y: auto; max-height: 460px;">
+				<h:panelGroup id="tablaPacientes">
+					<p:dataTable value="#{graficoBean.listaPacientes}" var="paciente"
+						style="width: 100%;">
+						<p:column headerText="Primer Nombre">
+							<h:outputText value="#{paciente.primerNombre}" />
+						</p:column>
+						<p:column headerText="Primer Apellido">
+							<h:outputText value="#{paciente.primerApellido}" />
+						</p:column>
+						<p:column headerText="Documento">
+							<h:outputText value="#{paciente.documento}" />
+						</p:column>
+						<p:column headerText="Fecha Afiliación">
+							<h:outputText value="#{paciente.fechaAfiliacion}" />
+						</p:column>
+						<p:column headerText="Tipo Afiliación">
+							<h:outputText value="#{paciente.tipoAfiliacion}" />
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
+			</div>
+
+		</p:outputPanel>
+	</div>
+
+	<div style="width: 100%; text-align: center; margin-bottom: 30px;">
+		<h2 style="margin: 0; font-weight: normal;">Buscar Perfil Clínico
+			del Paciente</h2>
+	</div>
+
+	<p:outputPanel
+		style="background-color: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex; gap: 20px; max-width: 1100px; margin: auto; border-radius: 10px;">
+
+		<!-- LADO IZQUIERDO: INPUT + BOTON -->
+		<div
+			style="display: flex; flex-direction: column; gap: 10px; width: max-content;">
+
+			<h:form id="formPerfil">
+				<div style="display: flex; flex-direction: column; gap: 5px;">
+					<h:outputLabel for="idPaciente" value="ID del Paciente:" />
+
+					<!-- Input numérico obligatorio -->
+					<p:inputText id="idPaciente" value="#{graficoBean.idPaciente}"
+						style="width: 150px;" required="true"
+						requiredMessage="Debe ingresar un ID"
+						validatorMessage="El ID debe ser un número">
+						<f:validateLongRange minimum="1" />
+					</p:inputText>
+
+					<!-- Mensajes de validación -->
+					<p:message for="idPaciente" style="color: red;" />
+				</div>
+
+				<p:commandButton value="Cargar Perfil"
+					action="#{graficoBean.cargarPerfilClinico}" update="tablaPerfil"
+					styleClass="login-btn" style="margin-top: 10px;" />
+			</h:form>
+
+		</div>
+
+		<!-- LADO DERECHO: TABLA -->
+		<div style="flex: 2;">
+			<h:panelGroup id="tablaPerfil">
+				<p:dataTable
+					value="#{graficoBean.perfilClinico != null ? 
+                                  [graficoBean.perfilClinico] : []}"
+					var="perfil" style="width: 100%;">
+					<p:column headerText="ID Paciente">
+						<h:outputText value="#{perfil.idPaciente}" />
+					</p:column>
+					<p:column headerText="Nombre Completo">
+						<h:outputText value="#{perfil.nombreCompleto}" />
+					</p:column>
+					<p:column headerText="Total Consultas">
+						<h:outputText value="#{perfil.totalConsultas}" />
+					</p:column>
+					<p:column headerText="Total Diagnósticos">
+						<h:outputText value="#{perfil.totalDiagnosticos}" />
+					</p:column>
+					<p:column headerText="Total Medicamentos">
+						<h:outputText value="#{perfil.totalMedicamentos}" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+		</div>
+
+	</p:outputPanel>
+
+	<!-- TITULO PRINCIPAL -->
+	<div
+		style="max-width: 1100px; margin: 60px auto 20px auto; text-align: left;">
+		<!-- Título grande con colores distintos -->
+		<h1 style="margin: 0; font-weight: bold; font-size: 32px;">
+			<span style="color: black;">INFORMACIÓN</span> <span
+				style="color: #8a79e6;">MEDICOS</span>
+			<!-- tono más oscuro que el boton -->
+		</h1>
+
+		<!-- Subtítulo -->
+		<h3
+			style="margin: 5px 0 10px 0; font-weight: normal; color: #555; font-size: 18px;">
+			Datos relevantes de medicos</h3>
+
+		<!-- Línea horizontal -->
+		<hr
+			style="border: none; height: 2px; background-color: #8a79e6; width: 100%; max-width: 1100px; margin-bottom: 50px;" />
+	</div>
+
+	<!-- Buscar Médicos por EPS -->
+	<div style="max-width: 1100px; margin: auto;">
+		<h2
+			style="text-align: center; margin-bottom: 30px; font-weight: normal;">
+			Buscar Médicos por EPS</h2>
+
+		<p:outputPanel
+			style="background-color: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+               display: flex; gap: 20px; border-radius: 10px; height: 500px; margin-bottom: 60px;">
+
+			<!-- LADO IZQUIERDO: COMBO + BOTON -->
+			<div
+				style="display: flex; flex-direction: column; gap: 10px; width: max-content;">
+				<h:form id="formMedicos">
+					<div style="display: flex; flex-direction: column; gap: 5px;">
+						<h:outputLabel for="nombreEpsM" value="EPS:" />
+						<p:selectOneMenu id="nombreEpsM" value="#{graficoBean.nombreEpsM}"
+							style="width: 180px;">
+							<f:selectItem itemLabel="Compensar" itemValue="Compensar" />
+							<f:selectItem itemLabel="Coosalud" itemValue="Coosalud" />
+							<f:selectItem itemLabel="Famisanar" itemValue="Famisanar" />
+							<f:selectItem itemLabel="Salud Total" itemValue="Salud%20Total" />
+							<f:selectItem itemLabel="Nueva EPS" itemValue="Nueva%20EPS" />
+							<f:selectItem itemLabel="Mutual Ser" itemValue="Mutual%20Ser" />
+							<f:selectItem itemLabel="SURA" itemValue="SURA" />
+							<f:selectItem itemLabel="Sanitas" itemValue="Sanitas" />
+						</p:selectOneMenu>
+					</div>
+
+					<p:commandButton value="Cargar"
+						action="#{graficoBean.cargarListaMedicos}" update="tablaMedicos"
+						styleClass="login-btn" style="margin-top: 10px;" />
+				</h:form>
+			</div>
+
+			<!-- LADO DERECHO: TABLA CON SCROLL -->
+			<div style="flex: 2; overflow-y: auto; max-height: 460px;">
+				<h:panelGroup id="tablaMedicos">
+					<p:dataTable value="#{graficoBean.listaMedicos}" var="medico"
+						style="width: 100%;">
+						<p:column headerText="Primer Nombre">
+							<h:outputText value="#{medico.primerNombre}" />
+						</p:column>
+						<p:column headerText="Primer Apellido">
+							<h:outputText value="#{medico.primerApellido}" />
+						</p:column>
+						<p:column headerText="Documento">
+							<h:outputText value="#{medico.documento}" />
+						</p:column>
+						<p:column headerText="Especialidad">
+							<h:outputText value="#{medico.especialidad}" />
+						</p:column>
+						<p:column headerText="Tarjeta Profesional">
+							<h:outputText value="#{medico.tarjetaProfesional}" />
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
+			</div>
+
+		</p:outputPanel>
+	</div>
+
+	<!-- TITULO PRINCIPAL -->
+	<div
+		style="max-width: 1100px; margin: 60px auto 20px auto; text-align: left;">
+		<!-- Título grande con colores distintos -->
+		<h1 style="margin: 0; font-weight: bold; font-size: 32px;">
+			<span style="color: black;">ESTADÍSTICAS</span> <span
+				style="color: #8a79e6;">GENERALES</span>
+			<!-- tono más oscuro que el boton -->
+		</h1>
+
+		<!-- Subtítulo -->
+		<h3
+			style="margin: 5px 0 10px 0; font-weight: normal; color: #555; font-size: 18px;">
+			Consultas relevantes generales</h3>
+
+		<!-- Línea horizontal -->
+		<hr
+			style="border: none; height: 2px; background-color: #8a79e6; width: 100%; max-width: 1100px; margin-bottom: 10px;" />
+	</div>
+
+	<p:outputPanel id="graficoEps"
+		style="background-color: white; padding: 20px; 
+           box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+           border-radius: 10px; max-width: 1100px; margin: auto; margin-bottom: 40px;">
+		<canvas id="chartEps" style="width: 100%; height: 600px;"></canvas>
+	</p:outputPanel>
+	<h:outputScript>
+const dataEps = JSON.parse('#{graficoBean.listaEpsJSON}'.replace(/&quot;/g, '"'));
+console.log("DATA EPS:", dataEps);
+
+// Agrupar por EPS
+const grupos = {};
+dataEps.forEach(item => {
+    if (!grupos[item.nombre]) grupos[item.nombre] = {};
+    grupos[item.nombre][item.mes] = item.totalConsultas;
+});
+
+// Obtener meses ordenados
+const meses = [...new Set(dataEps.map(i => i.mes))].sort((a, b) => a - b);
+
+// Colores para cada EPS
+const colores = [
+    '#FF6384', // rojo
+    '#36A2EB', // azul
+    '#FFCE56', // amarillo
+    '#4BC0C0', // verde agua
+    '#9966FF', // morado
+    '#FF9F40', // naranja
+    '#C9CBCF', // gris
+];
+
+const dataSets = Object.keys(grupos).map((eps, i) => {
+    return {
+        label: eps,
+        data: meses.map(m => grupos[eps][m] || 0),
+        fill: false,
+        borderColor: colores[i % colores.length],
+        tension: 0.2,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+    };
+});
+
+// Crear la gráfica
+new Chart(document.getElementById('chartEps'), {
+    type: 'line',
+    data: {
+        labels: meses,
+        datasets: dataSets
+    },
+    options: {
+        responsive: true,
+        layout: {
+        padding: {
+            left: 50,   // espacio a la izquierda
+            right: 50,  // espacio a la derecha
+            top: 50,
+            bottom: 50
+        }
+    },
+        plugins: {
+            title: {
+    display: true,
+    text: 'Total de Consultas Cargadas Mensualmente por EPS',
+    font: {
+        size: 22,   // ← tamaño más grande
+        weight: 'bold'
+    },
+    padding: {
+        top: 10,
+        bottom: 20
+    }
+}
+
+        },
+        scales: {
+    x: {
+        title: {
+            display: true,
+            text: 'Mes',
+            font: {
+                size: 17,    // ← tamaño del texto del eje X
+                weight: 'bold'
+            },
+            padding: { top: 10 }
+        },
+        ticks: {
+            font: {
+                size: 13     // ← tamaño de los números del eje X
+            }
+        }
+    },
+    y: {
+        beginAtZero: true,
+        title: {
+            display: true,
+            text: 'Total Consultas',
+            font: {
+                size: 17,    // ← tamaño del texto del eje Y
+                weight: 'bold'
+            },
+            padding: { bottom: 10 }
+        },
+        ticks: {
+            font: {
+                size: 13     // ← tamaño de los números del eje Y
+            }
+        }
+    }
+}
+    }
+});
+</h:outputScript>
+
+	<p:outputPanel id="graficoTopMedicos"
+		style="background-color: white; padding: 20px; 
+           box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+           border-radius: 10px; max-width: 1100px; margin: auto; margin-bottom: 40px;">
+		<canvas id="chartTopMedicos" style="width: 100%; height: 400px;"></canvas>
+	</p:outputPanel>
+
+	<h:outputScript>
+    // Convertir JSON JSF → JavaScript
+    const dataMedicos = JSON.parse('#{graficoBean.listaTopMedicosJSON}'.replace(/&quot;/g, '"'));
+    console.log("DATA MEDICOS:", dataMedicos);
+
+    // Nombres y totales
+    const nombres = dataMedicos.map(item => item.nombreCompleto);
+    const totales = dataMedicos.map(item => item.totalConsultas);
+
+    // Colores únicos para cada barra
+    const coloresMedicos = [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+        '#9966FF', '#FF9F40', '#C9CBCF'
+    ];
+
+    new Chart(document.getElementById('chartTopMedicos'), {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Total Consultas',
+                data: totales,
+                backgroundColor: totales.map((_, i) => coloresMedicos[i % coloresMedicos.length]),
+                borderColor: totales.map((_, i) => coloresMedicos[i % coloresMedicos.length]),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            layout: {
+        padding: {
+            left: 50,   // espacio a la izquierda
+            right: 50,  // espacio a la derecha
+            top: 50,
+            bottom: 50
+        }
+    },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Top Médicos por Total de Consultas',
+                    font: {
+                        size: 20,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Médicos',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 13
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Consultas',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 13
+                        }
+                    }
+                }
+            }
+        }
+    });
+</h:outputScript>
+
+	<p:outputPanel id="panelTopEnfermedades"
+		style="background-color: white; padding: 20px; 
+           box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+           border-radius: 10px; max-width: 1100px; margin: auto; margin-bottom: 40px;">
+		<canvas id="chartEnfermedades"></canvas>
+	</p:outputPanel>
+
+	<h:outputScript>
+        // Convertir datos JSF → JavaScript
+        const topEnfermedadesData = JSON.parse('#{graficoBean.listaTopEnfermedadesJSON}'.replace(/&quot;/g, '"'));
+
+        console.log("Top Enfermedades:", topEnfermedadesData);
+
+        // Etiquetas y datos
+        const etiquetasEnfermedades = topEnfermedadesData.map(item => item.descripcion);
+        const totalesEnfermedades = topEnfermedadesData.map(item => item.total);
+
+        // Colores para barras
+        const coloresEnfermedades = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+            '#FF9F40', '#C9CBCF', '#8A2BE2', '#00CED1', '#FF4500'
+        ];
+
+        // Crear gráfico de barras horizontal
+        new Chart(document.getElementById('chartEnfermedades'), {
+            type: 'bar',
+            data: {
+                labels: etiquetasEnfermedades,
+                datasets: [{
+                    label: 'Total Consultas',
+                    data: totalesEnfermedades,
+                    backgroundColor: coloresEnfermedades.slice(0, totalesEnfermedades.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Esto hace que sea horizontal
+                responsive: true,
+                layout: {
+        padding: {
+            left: 60,   // espacio a la izquierda
+            right: 60,  // espacio a la derecha
+            top: 50,
+            bottom: 50
+        }
+    },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Top Enfermedades Más Repetidas',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            bottom: 15
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Consultas',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Enfermedades',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </h:outputScript>
+
+	<p:outputPanel id="graficoMedicamentosEPS"
+		style="background-color: white; padding: 20px; 
+           box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+           border-radius: 10px; max-width: 1100px; margin: auto; margin-bottom: 40px;">
+		<canvas id="chartMedicamentosEPS" style="width: 100%; height: 600px;"></canvas>
+	</p:outputPanel>
+
+	<h:outputScript>
+const dataMedicamentos = JSON.parse('#{graficoBean.listaTopMedicamentosJSON}'.replace(/&quot;/g, '"'));
+console.log("DATA MEDICAMENTOS:", dataMedicamentos);
+
+// Agrupar por EPS
+const gruposMedicamentos = {};
+dataMedicamentos.forEach(item => {
+    if (!gruposMedicamentos[item.nombreEps]) gruposMedicamentos[item.nombreEps] = {};
+    gruposMedicamentos[item.nombreEps][item.medicamento] = item.total;
+});
+
+// Obtener lista de medicamentos ordenada (eje X)
+const medicamentos = [...new Set(dataMedicamentos.map(i => i.medicamento))];
+
+// Colores para cada EPS
+const coloresMedicamentos = [
+    '#FF6384', // rojo
+    '#36A2EB', // azul
+    '#FFCE56', // amarillo
+    '#4BC0C0', // verde agua
+    '#9966FF', // morado
+    '#FF9F40', // naranja
+    '#C9CBCF', // gris
+];
+
+const dataSetsMedicamentos = Object.keys(gruposMedicamentos).map((eps, i) => {
+    return {
+        label: eps,
+        data: medicamentos.map(med => gruposMedicamentos[eps][med] || 0),
+        fill: false,
+        borderColor: coloresMedicamentos[i % coloresMedicamentos.length],
+        tension: 0.2,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+    };
+});
+
+// Crear la gráfica
+new Chart(document.getElementById('chartMedicamentosEPS'), {
+    type: 'line',
+    data: {
+        labels: medicamentos,
+        datasets: dataSetsMedicamentos
+    },
+    options: {
+        responsive: true,
+        layout: {
+            padding: {
+                left: 50,
+                right: 50,
+                top: 50,
+                bottom: 50
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Top Medicamentos por EPS',
+                font: {
+                    size: 22,
+                    weight: 'bold'
+                },
+                padding: {
+                    top: 10,
+                    bottom: 20
+                }
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Medicamento',
+                    font: {
+                        size: 17,
+                        weight: 'bold'
+                    },
+                    padding: { top: 10 }
+                },
+                ticks: {
+                    font: {
+                        size: 13
+                    }
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Total',
+                    font: {
+                        size: 17,
+                        weight: 'bold'
+                    },
+                    padding: { bottom: 10 }
+                },
+                ticks: {
+                    font: {
+                        size: 13
+                    }
+                }
+            }
+        }
+    }
+});
+</h:outputScript>
+	<!-- Pie de página -->
+	<footer
+		style="position: relative; background-color: #b8baed; border-radius: 15px; padding: 40px 60px; margin-top: 50px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+		<!-- Logo e información -->
+		<div class="footer-left"
+			style="flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; margin-top: -20px;">
+
+			<!-- Logo -->
+			<img src="images/logoblanco.png" alt="Logo"
+				style="height: 130px; margin-bottom: 15px; margin-left: 20px;" />
+
+			<!-- Textos de contacto -->
+			<p
+				style="margin-bottom: 10px; margin-left: 20px; font-size: 1em; font-weight: bold;">Líneas
+				de Servicio al Cliente</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3228983583</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">3142048147</p>
+			<p style="margin-bottom: 10px; margin-left: 40px; font-size: 1em;">servicioalcliente@loom.com.co</p>
+		</div>
+
+
+
+
+		<!-- Línea vertical en la mitad -->
+		<div
+			style="position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; background-color: black;"></div>
+
+		<!-- Redes sociales -->
+		<div class="footer-right"
+			style="flex: 1; min-width: 250px; margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; margin-left: 180px;">
+
+			<!-- Título -->
+			<p style="font-size: 1.7em; font-weight: bold; margin-bottom: 40px;">Síguenos</p>
+
+			<div class="social-icons"
+				style="display: flex; flex-direction: column; gap: 35px;">
+
+				<!-- Primera fila: Instagram, Facebook, YouTube -->
+				<div style="display: flex; gap: 50px; margin-bottom: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-instagram" style="font-size: 2.5em;"></i>
+						Instagram
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-facebook" style="font-size: 2.5em;"></i>
+						Facebook
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-youtube" style="font-size: 2.5em;"></i>
+						YouTube
+					</a>
+				</div>
+
+				<!-- Segunda fila: LinkedIn, Twitter -->
+				<div style="display: flex; gap: 50px; margin-top: 15px;">
+					<a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-linkedin" style="font-size: 2.5em;"></i>
+						LinkedIn
+					</a> <a href="#" target="_blank"
+						style="color: black; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 1em;">
+						<i class="fa-brands fa-x-twitter" style="font-size: 2.5em;"></i>
+						Twitter
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+
+	</footer>
+</body>
+</html>

@@ -11,7 +11,8 @@
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 	<title>Paciente</title>
-	<style>
+</h:head>
+<style>
 body {
 	position: relative;
 	margin: 0;
@@ -276,19 +277,25 @@ footer {
 	color: black !important;
 }
 </style>
-</h:head>
+<f:metadata>
+	<f:event type="preRenderView" listener="#{usuarioBean.verificarSesion}" />
+</f:metadata>
+
 
 <body>
 	<!-- Banner flotante -->
 	<div class="banner-container">
 		<div class="banner-header">
-			<a href="inicio.xhtml"> <img src="images/logoFondoBlanco.png"
+			<a href="paciente.xhtml"> <img src="images/logoFondoBlanco.png"
 				alt="Logo" />
 			</a>
 			<div>
-				<a href="inicio.xhtml" class="eps-btn"> <i
-					class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-				</a>
+				<h:form>
+					<h:commandLink action="#{usuarioBean.cerrarSesion}"
+						styleClass="eps-btn" ajax="false">
+						<i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+    </h:commandLink>
+				</h:form>
 			</div>
 
 
@@ -346,7 +353,7 @@ footer {
 						rendered="#{pacienteBean.vista == 'info'}" style="padding:20px;">
 
 						<p:panel header="Mi Información"
-							style="width: 520px; height: 420px; overflow-y: auto; padding: 15px;">
+							style="width:520px; height:420px; overflow-y:auto; padding:15px; margin:0 auto;">
 
 							<!-- Documento -->
 							<h:panelGroup>
@@ -415,17 +422,19 @@ footer {
 					<p:outputPanel id="consultasContainer"
 						rendered="#{pacienteBean.vista == 'consultas'}">
 
-						<h:panelGroup rendered="#{not empty consultaBean.consultas}">
+						<h:panelGroup rendered="#{not empty pacienteBean.consultas}">
 
 							<!-- CONTENEDOR GRID -->
 							<div class="consulta-grid">
-								<ui:repeat value="#{consultaBean.consultas}" var="c">
+								<ui:repeat value="#{pacienteBean.consultas}" var="c">
 									<p:card header="#{c.eps.nombreEps}" styleClass="consulta-card"
 										style="text-align:center; cursor:pointer; width:100%; 
-                                    box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+               box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;
+               padding-top: 15px;">
+
 
 										<p:commandLink process="@this"
-											actionListener="#{consultaBean.seleccionarConsulta(c)}"
+											actionListener="#{pacienteBean.seleccionarConsulta(c)}"
 											oncomplete="PF('dialogConsulta').show()"
 											update=":modales:dialogContenidoConsultas">
 
@@ -433,15 +442,20 @@ footer {
 												value="/images/#{consultaBean.obtenerLogoEps(c.eps.nombreEps)}"
 												style="width:100px;height:auto;margin:auto;display:block;" />
 
-											<p style="margin-top: 10px; font-weight: bold;">
-												Fecha:
+											<p style="margin-top: 10px;">
+												<span style="font-weight: bold;">Fecha: </span>
 												<h:outputText value="#{c.fechaConsulta}" />
 											</p>
 
 											<p>
-												Especialidad:
+												<span style="font-weight: bold;">Especialidad: </span>
 												<h:outputText
 													value="#{medicoBean.obtenerEspecialidad(c.idMedico)}" />
+											</p>
+											<p>
+												<span style="font-weight: bold;">Medico: </span>
+												<h:outputText
+													value="#{medicoBean.obtenerNombreDoctor(c.idMedico)}" />
 											</p>
 
 										</p:commandLink>
@@ -449,6 +463,7 @@ footer {
 									</p:card>
 								</ui:repeat>
 							</div>
+
 
 							<!-- MODAL -->
 							<p:dialog header="Detalles de la Consulta"
@@ -468,7 +483,7 @@ footer {
 											columnClasses="col1,col2">
 
 											<ui:repeat
-												value="#{consultaBean.consultaSeleccionada.diagnosticos}"
+												value="#{pacienteBean.consultaSeleccionada.diagnosticos}"
 												var="d">
 												<p>
 													🩺 <b>#{d.codigoCie10}</b> - #{d.descripcion}
@@ -485,7 +500,7 @@ footer {
 											columnClasses="col1,col2">
 
 											<ui:repeat
-												value="#{consultaBean.consultaSeleccionada.medicamentos}"
+												value="#{pacienteBean.consultaSeleccionada.medicamentos}"
 												var="m">
 												<p>
 													💊 <b>#{m.nombreComercial}</b> — #{m.principioActivo}
@@ -502,7 +517,7 @@ footer {
 											columnClasses="col1,col2">
 
 											<ui:repeat
-												value="#{consultaBean.consultaSeleccionada.examenes}"
+												value="#{pacienteBean.consultaSeleccionada.examenes}"
 												var="e">
 												<p>
 													🧪 <b>#{e.tipoExamen}</b> — Resultado: #{e.resultado}
@@ -520,10 +535,242 @@ footer {
 
 						<!-- Sin consultas -->
 						<h:outputText value="No tienes consultas registradas aún."
-							rendered="#{empty consultaBean.consultas}"
+							rendered="#{empty pacienteBean.consultas}"
 							style="color: gray; font-style: italic;" />
 
 					</p:outputPanel>
+
+					<!-- =================================
+                     SECCIÓN DIAGNOSTICOS
+                     ================================= -->
+
+					<p:outputPanel id="diagnosticosContainer"
+						rendered="#{pacienteBean.vista == 'diagnosticos'}">
+
+						<h:panelGroup rendered="#{not empty pacienteBean.diagnosticos}">
+
+							<!-- CONTENEDOR GRID -->
+							<div class="consulta-grid">
+								<ui:repeat value="#{pacienteBean.diagnosticos}" var="c">
+									<p:card styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%; 
+                               box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<p style="margin-top: 10px;">
+											<span style="font-weight: bold;">Fecha Diagnóstico: </span>
+											<h:outputText
+												value="#{pacienteBean.mostrarFecha(c.idConsulta)}" />
+										</p>
+
+										<p>
+											<span style="font-weight: bold;">Código CIE10: </span>
+											<h:outputText value="#{c.codigoCie10}" />
+										</p>
+
+										<p>
+											<span style="font-weight: bold;">Descripción: </span>
+											<h:outputText value="#{c.descripcion}" />
+										</p>
+
+									</p:card>
+								</ui:repeat>
+							</div>
+
+
+
+						</h:panelGroup>
+
+						<!-- Sin consultas -->
+						<h:outputText value="No tienes diagnosticos registrados aún."
+							rendered="#{empty pacienteBean.diagnosticos}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+					<!-- =================================
+                     SECCIÓN MEDICAMENTOS
+                     ================================= -->
+
+					<p:outputPanel id="medicamentosContainer"
+						rendered="#{pacienteBean.vista == 'medicamentos'}">
+
+						<h:panelGroup rendered="#{not empty pacienteBean.medicamentos}">
+
+							<!-- CONTENEDOR GRID -->
+							<div class="consulta-grid">
+								<ui:repeat value="#{pacienteBean.medicamentos}" var="c">
+									<p:card styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%; 
+                               box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<p:commandLink process="@this"
+											actionListener="#{pacienteBean.seleccionarMedicamento(c)}"
+											oncomplete="PF('dialogMedicamento').show()"
+											update=":modales:dialogContenidoMedicamentos">
+
+											<p style="margin-top: 10px;">
+												<span style="font-weight: bold;">Fecha: </span>
+												<h:outputText
+													value="#{pacienteBean.mostrarFecha(c.idConsulta)}" />
+											</p>
+
+											<p>
+												<span style="font-weight: bold;">Nombre Comercial: </span>
+												<h:outputText value="#{c.nombreComercial}" />
+											</p>
+
+										</p:commandLink>
+
+									</p:card>
+								</ui:repeat>
+							</div>
+
+							<!-- MODAL -->
+							<p:dialog header="Detalles del Medicamento"
+								widgetVar="dialogMedicamento" styleClass="custom-dialog"
+								modal="true" responsive="true" width="550" height="400"
+								style="overflow:hidden !important;">
+
+								<div class="dialog-scroll">
+									<h:panelGrid columns="1" id="dialogContenidoMedicamentos"
+										style="width:100%;">
+
+										<!-- Medicamento -->
+										<h3 style="margin-top: 25px;">💊 Medicamento</h3>
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+                                        border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<ui:repeat value="#{pacienteBean.medicamentoSeleccionado}"
+												var="m">
+
+												<p style="margin-top: 11px;">
+													<span style="font-weight: bold;">Nombre Comercial: </span>
+													<h:outputText value="#{m.nombreComercial}" />
+												</p>
+												<p style="margin-top: 11px;">
+													<span style="font-weight: bold;">Principio Activo: </span>
+													<h:outputText value="#{m.principioActivo}" />
+												</p>
+												<p style="margin-top: 11px;">
+													<span style="font-weight: bold;">Dosis: </span>
+													<h:outputText value="#{m.dosis}" />
+												</p>
+												<p style="margin-top: 11px;">
+													<span style="font-weight: bold;">Frecuencia: </span>
+													<h:outputText value="#{m.frecuencia}" />
+												</p>
+												<p style="margin-top: 11px;">
+													<span style="font-weight: bold;">Duración: </span>
+													<h:outputText value="#{m.duracion}" />
+												</p>
+
+											</ui:repeat>
+
+										</h:panelGrid>
+
+									</h:panelGrid>
+								</div>
+
+							</p:dialog>
+
+						</h:panelGroup>
+
+						<h:outputText value="No tienes medicamentos registrados aún."
+							rendered="#{empty pacienteBean.medicamentos}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+					<!-- =================================
+                     SECCIÓN EXAMENES
+                     ================================= -->
+
+					<p:outputPanel id="examenesContainer"
+						rendered="#{pacienteBean.vista == 'examenes'}">
+
+						<h:panelGroup rendered="#{not empty pacienteBean.examenes}">
+
+							<!-- CONTENEDOR GRID -->
+							<div class="consulta-grid">
+								<ui:repeat value="#{pacienteBean.examenes}" var="c">
+									<p:card styleClass="consulta-card"
+										style="text-align:center; cursor:pointer; width:100%; 
+                               box-shadow:0 0 8px rgba(0,0,0,0.1); border-radius:10px;">
+
+										<p:commandLink process="@this"
+											actionListener="#{pacienteBean.seleccionarExamen(c)}"
+											oncomplete="PF('dialogExamen').show()"
+											update=":modales:dialogContenidoExamenes">
+
+											<p style="margin-top: 10px;">
+												<span style="font-weight: bold;">Fecha: </span>
+												<h:outputText
+													value="#{pacienteBean.mostrarFecha(c.idConsulta)}" />
+											</p>
+
+											<p>
+												<span style="font-weight: bold;">Tipo de Examen:  </span>
+												<h:outputText value="#{c.tipoExamen}" />
+											</p>
+
+										</p:commandLink>
+
+									</p:card>
+								</ui:repeat>
+							</div>
+
+							<!-- MODAL -->
+							<p:dialog header="Detalles del Examen" widgetVar="dialogExamen"
+								styleClass="custom-dialog" modal="true" responsive="true"
+								width="550" height="400" style="overflow:hidden !important;">
+
+								<div class="dialog-scroll">
+									<h:panelGrid columns="1" id="dialogContenidoExamenes"
+										style="width:100%;">
+
+										<h3 style="margin-top: 25px;">💊 Examen</h3>
+										<h:panelGrid columns="2"
+											style="width:100%; border:1px solid #ddd; padding:10px;
+                                        border-radius:8px; margin-bottom:10px;"
+											columnClasses="col1,col2">
+
+											<ui:repeat value="#{pacienteBean.examenSeleccionado}" var="m">
+
+												<p style="margin-top: 10px;">
+													<span style="font-weight: bold;">Tipo de examen: </span>
+													<h:outputText value="#{m.tipoExamen}" />
+												</p>
+												<p style="margin-top: 10px;">
+													<span style="font-weight: bold;">Fecha Programada: </span>
+													<h:outputText
+														value="#{pacienteBean.mostrarFechaExamen(m.idExamen)}" />
+												</p>
+												<p style="margin-top: 10px;">
+													<span style="font-weight: bold;">Resultado: </span>
+													<h:outputText value="#{m.resultado}" />
+												</p>
+
+											</ui:repeat>
+
+										</h:panelGrid>
+
+									</h:panelGrid>
+								</div>
+
+							</p:dialog>
+
+						</h:panelGroup>
+
+						<!-- Sin consultas -->
+						<h:outputText value="No tienes examenes registrados aún."
+							rendered="#{empty pacienteBean.examenes}"
+							style="color: gray; font-style: italic;" />
+
+					</p:outputPanel>
+
+
 
 				</p:outputPanel>
 
@@ -602,10 +849,6 @@ footer {
 
 			</div>
 		</div>
-
-
 	</footer>
-
-
 </body>
 </html>
